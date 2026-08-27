@@ -6,173 +6,253 @@
   <title>Project G.A.T.E. | Road Safety Engine</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
   <style>
-    @keyframes pulse-glow {
-      0%, 100% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.05); opacity: 1; }
+    @keyframes scan-laser {
+      0% { top: 0%; opacity: 0.8; }
+      50% { top: 92%; opacity: 1; }
+      100% { top: 0%; opacity: 0.8; }
     }
-    .pulse-effect {
-      animation: pulse-glow 2s infinite ease-in-out;
+    .laser-line {
+      animation: scan-laser 2.2s ease-in-out infinite;
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glow-amber {
+      box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.25);
+    }
+    .glow-indigo {
+      box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.35);
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased flex flex-col items-center">
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased flex justify-center items-center p-0 sm:p-4">
 
-  <div class="w-full max-w-md bg-slate-900 min-h-screen border-x border-slate-800 shadow-2xl flex flex-col pb-20">
+  <div class="w-full max-w-md bg-slate-900 min-h-screen sm:min-h-[844px] sm:max-h-[880px] sm:rounded-[36px] border border-slate-800 shadow-2xl flex flex-col overflow-hidden relative">
     
-    <header class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80 backdrop-blur sticky top-0 z-20">
-      <div class="flex items-center space-x-2">
-        <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
-          <i data-lucide="shield-alert" class="w-5 h-5"></i>
+    <header class="p-4 border-b border-slate-800/80 glass-card sticky top-0 z-30 flex items-center justify-between">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20">
+          <i data-lucide="shield-check" class="w-6 h-6 stroke-[2.5]"></i>
         </div>
         <div>
-          <h1 class="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
-            Project G.A.T.E. <span class="text-[10px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded-full font-mono">Yi YUVA</span>
-          </h1>
-          <p class="text-[11px] text-slate-400">Nashik Zone Compliance Engine</p>
+          <div class="flex items-center gap-1.5">
+            <h1 class="text-base font-extrabold tracking-tight text-white">Project G.A.T.E.</h1>
+            <span class="text-[9px] bg-amber-400/10 text-amber-300 border border-amber-400/30 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Yi YUVA</span>
+          </div>
+          <p class="text-[11px] text-slate-400">Nashik Zone Behavioral Engine</p>
         </div>
       </div>
-      <div class="flex items-center gap-1.5 bg-slate-800/80 px-2.5 py-1 rounded-full border border-slate-700">
-        <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
-        <span id="userPoints" class="text-xs font-bold text-amber-300">120 pts</span>
+      
+      <div class="flex items-center gap-1.5 bg-slate-800/90 border border-amber-500/30 px-3 py-1.5 rounded-full glow-amber">
+        <i data-lucide="zap" class="w-4 h-4 text-amber-400 fill-amber-400"></i>
+        <span id="userPoints" class="text-xs font-black text-amber-300 tracking-wide font-mono">120 PTS</span>
       </div>
     </header>
 
-    <main class="flex-1 p-4 space-y-4">
+    <main class="flex-1 overflow-y-auto p-4 space-y-4 pb-24">
 
       <section id="checkin-section" class="space-y-4">
         
-        <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/60 shadow-lg">
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-950/60 via-slate-900 to-slate-900 border border-indigo-500/20 relative overflow-hidden shadow-xl">
+          <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl"></div>
           <div class="flex justify-between items-start">
             <div>
-              <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Active Commuter</span>
-              <h2 class="text-lg font-bold text-white mt-0.5">Aditya Chate</h2>
-              <p class="text-xs text-slate-400">KKWIEER • Electrical Dept</p>
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Commuter Profile</span>
+              </div>
+              <h2 class="text-lg font-bold text-white mt-1">Aditya Chate</h2>
+              <p class="text-xs text-indigo-300">KKWIEER • Electrical Engineering</p>
             </div>
             <div class="text-right">
-              <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium">Verified Rider</span>
-              <p class="text-xs text-slate-300 mt-1 font-mono">🔥 <span id="streakCount">4</span> Days Streak</p>
+              <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-full font-bold">Tier 1 Verified</span>
+              <p class="text-xs text-slate-300 mt-2 font-mono font-semibold">🔥 <span id="streakCount">4</span>-Day Streak</p>
             </div>
           </div>
         </div>
 
-        <div class="p-5 rounded-2xl bg-slate-800/60 border border-slate-700 text-center relative overflow-hidden">
-          <div class="inline-flex p-3 rounded-full bg-slate-900/80 border border-slate-700 mb-3 text-slate-300">
-            <i data-lucide="scan-line" class="w-7 h-7 text-indigo-400 pulse-effect"></i>
+        <div class="p-5 rounded-3xl glass-card border border-slate-700/60 text-center relative overflow-hidden glow-indigo">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Entry Viewfinder</span>
+            <span class="text-[10px] text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-md font-mono">GATE #01 • PANCHAVATI</span>
           </div>
-          <h3 class="text-sm font-semibold text-white">Campus Gate Check-In</h3>
-          <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
-            Verify helmet and safe speed entry at KKWIEER Main Gate checkpoint.
-          </p>
 
-          <div class="mt-4 space-y-2 text-left bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-xs">
-            <label class="flex items-center space-x-2 cursor-pointer text-slate-300">
-              <input type="checkbox" id="helmetCheck" checked class="w-4 h-4 rounded border-slate-700 text-indigo-600 focus:ring-0 focus:ring-offset-0 bg-slate-800" />
+          <div class="relative w-full h-44 bg-slate-950/80 rounded-2xl border-2 border-indigo-500/30 flex items-center justify-center overflow-hidden group">
+            <div class="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent laser-line shadow-[0_0_12px_#22d3ee]"></div>
+            
+            <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-cyan-400"></div>
+            <div class="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-cyan-400"></div>
+            <div class="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-cyan-400"></div>
+            <div class="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-cyan-400"></div>
+
+            <div class="flex flex-col items-center justify-center space-y-1 z-10">
+              <i data-lucide="qr-code" class="w-14 h-14 text-indigo-400/60 stroke-[1.5]"></i>
+              <span class="text-[10px] text-slate-400 tracking-wider uppercase font-mono">Align Gate QR Code</span>
+            </div>
+          </div>
+
+          <div class="mt-4 space-y-2 text-left bg-slate-950/50 p-3.5 rounded-xl border border-slate-800 text-xs">
+            <label class="flex items-center space-x-2.5 cursor-pointer text-slate-300 hover:text-white transition">
+              <input type="checkbox" id="helmetCheck" checked class="w-4 h-4 rounded border-slate-700 text-indigo-600 focus:ring-0 bg-slate-800" />
               <span>Wearing ISI / DOT Certified Helmet</span>
             </label>
-            <label class="flex items-center space-x-2 cursor-pointer text-slate-300">
-              <input type="checkbox" id="speedCheck" checked class="w-4 h-4 rounded border-slate-700 text-indigo-600 focus:ring-0 focus:ring-offset-0 bg-slate-800" />
-              <span>Campus Entry Speed Under 20 km/h</span>
+            <label class="flex items-center space-x-2.5 cursor-pointer text-slate-300 hover:text-white transition">
+              <input type="checkbox" id="speedCheck" checked class="w-4 h-4 rounded border-slate-700 text-indigo-600 focus:ring-0 bg-slate-800" />
+              <span>Campus Entry Speed Below 20 km/h</span>
             </label>
           </div>
 
-          <button id="scanBtn" onclick="handleCheckIn()" class="mt-4 w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] transition-all rounded-xl font-bold text-sm text-white shadow-lg shadow-indigo-600/30 flex items-center justify-center space-x-2">
-            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-            <span>Simulate Gate Check-in (+30 pts)</span>
+          <button id="scanBtn" onclick="handleCheckIn()" class="mt-4 w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 active:scale-[0.98] transition-all rounded-xl font-extrabold text-sm text-white shadow-lg shadow-indigo-500/25 flex items-center justify-center space-x-2">
+            <i data-lucide="scan-face" class="w-4 h-4"></i>
+            <span>Log Safe Commute (+30 PTS)</span>
           </button>
           
-          <p id="feedbackMsg" class="text-xs font-medium mt-2.5 h-4 transition-opacity"></p>
+          <p id="feedbackMsg" class="text-xs font-semibold mt-2.5 h-4 transition-opacity"></p>
         </div>
 
       </section>
 
       <section id="leaderboard-section" class="hidden space-y-3">
         <div class="flex justify-between items-center mb-1">
-          <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
-            <i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i> Nashik Safety Index
-          </h2>
-          <span class="text-[11px] text-slate-400">Live Chapter Standings</span>
+          <div>
+            <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
+              <i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i> Nashik Safety Index
+            </h2>
+            <p class="text-[10px] text-slate-400">Real-Time Institutional Compliance Ranking</p>
+          </div>
+          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono font-bold">LIVE FEED</span>
         </div>
 
-        <div id="leaderboardList" class="space-y-2">
+        <div id="leaderboardList" class="space-y-2.5">
           </div>
 
-        <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-300/90 leading-relaxed flex items-start space-x-2 mt-4">
-          <i data-lucide="info" class="w-4 h-4 flex-shrink-0 mt-0.5"></i>
-          <span><b>Peer Norm Effect:</b> Individual student compliance directly increases institutional rank, driving collective accountability.</span>
+        <div class="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/25 text-xs text-amber-300/90 leading-relaxed flex items-start space-x-2.5 mt-4">
+          <i data-lucide="sparkles" class="w-5 h-5 flex-shrink-0 text-amber-400 mt-0.5"></i>
+          <div>
+            <strong class="text-amber-200">Behavioral Psychology Insight:</strong>
+            <p class="text-[11px] text-slate-300 mt-0.5">Individual helmet skips decrease the college's regional score. Collective peer accountability replaces police fear with campus pride.</p>
+          </div>
         </div>
       </section>
 
       <section id="rewards-section" class="hidden space-y-3">
         <div class="flex justify-between items-center mb-1">
-          <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
-            <i data-lucide="gift" class="w-4 h-4 text-emerald-400"></i> Ecosystem Incentives
-          </h2>
-          <span class="text-[11px] text-slate-400">CII & Campus Perks</span>
+          <div>
+            <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
+              <i data-lucide="gift" class="w-4 h-4 text-emerald-400"></i> Ecosystem Perks
+            </h2>
+            <p class="text-[10px] text-slate-400">Non-Cash Incentives via CII Partners</p>
+          </div>
+          <span class="text-[10px] text-slate-400 font-mono">Nashik Region</span>
         </div>
 
-        <div class="space-y-2.5">
-          <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-              <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                <i data-lucide="parking-circle" class="w-5 h-5"></i>
+        <div class="space-y-3">
+          <div class="p-4 rounded-2xl glass-card border border-slate-700/60 flex justify-between items-center hover:border-emerald-500/40 transition">
+            <div class="flex items-center space-x-3.5">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <i data-lucide="car" class="w-5 h-5"></i>
               </div>
               <div>
-                <h4 class="text-xs font-bold text-white">Campus VIP Parking Pass</h4>
-                <p class="text-[10px] text-slate-400">Reserved slot near Main Gate</p>
+                <h4 class="text-xs font-bold text-white">Campus VIP Reserved Parking</h4>
+                <p class="text-[10px] text-slate-400">Priority gate bay for 1 full week</p>
               </div>
             </div>
-            <button onclick="claimReward(150, 'VIP Parking Pass')" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 active:scale-95 text-xs font-semibold rounded-lg text-emerald-300 border border-emerald-500/30 transition">
-              150 pts
+            <button onclick="claimReward(150, 'Campus VIP Parking')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-xs font-bold rounded-lg text-white shadow-md shadow-emerald-600/20 transition">
+              150 PTS
             </button>
           </div>
 
-          <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-              <div class="w-9 h-9 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+          <div class="p-4 rounded-2xl glass-card border border-slate-700/60 flex justify-between items-center hover:border-indigo-500/40 transition">
+            <div class="flex items-center space-x-3.5">
+              <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
                 <i data-lucide="fuel" class="w-5 h-5"></i>
               </div>
               <div>
                 <h4 class="text-xs font-bold text-white">₹100 Fuel Loyalty Coupon</h4>
-                <p class="text-[10px] text-slate-400">Partner petrol pumps (Nashik)</p>
+                <p class="text-[10px] text-slate-400">Redeemable at HP/IndianOil Nashik</p>
               </div>
             </div>
-            <button onclick="claimReward(250, '₹100 Fuel Coupon')" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 active:scale-95 text-xs font-semibold rounded-lg text-indigo-300 border border-indigo-500/30 transition">
-              250 pts
+            <button onclick="claimReward(250, '₹100 Fuel Coupon')" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-xs font-bold rounded-lg text-white shadow-md shadow-indigo-600/20 transition">
+              250 PTS
             </button>
           </div>
 
-          <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-              <div class="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+          <div class="p-4 rounded-2xl glass-card border border-slate-700/60 flex justify-between items-center hover:border-amber-500/40 transition">
+            <div class="flex items-center space-x-3.5">
+              <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
                 <i data-lucide="coffee" class="w-5 h-5"></i>
               </div>
               <div>
-                <h4 class="text-xs font-bold text-white">Canteen Fast-Track Card</h4>
-                <p class="text-[10px] text-slate-400">Priority counter access for 1 week</p>
+                <h4 class="text-xs font-bold text-white">Canteen Express Pass</h4>
+                <p class="text-[10px] text-slate-400">Skip-the-line status at campus canteen</p>
               </div>
             </div>
-            <button onclick="claimReward(100, 'Canteen Fast-Track')" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 active:scale-95 text-xs font-semibold rounded-lg text-amber-300 border border-amber-500/30 transition">
-              100 pts
+            <button onclick="claimReward(100, 'Canteen Express Pass')" class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-500 active:scale-95 text-xs font-bold rounded-lg text-white shadow-md shadow-amber-600/20 transition">
+              100 PTS
             </button>
           </div>
         </div>
       </section>
 
+      <section id="judges-section" class="hidden space-y-3">
+        <div class="flex justify-between items-center mb-1">
+          <div>
+            <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
+              <i data-lucide="bar-chart-2" class="w-4 h-4 text-cyan-400"></i> Judge Analytics
+            </h2>
+            <p class="text-[10px] text-slate-400">Future 6.0 Evaluation Metric Matrix</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700">
+            <span class="text-[10px] text-slate-400 uppercase font-bold">MoRTH Crisis</span>
+            <div class="text-xl font-black text-rose-400 mt-1">65%+</div>
+            <p class="text-[9px] text-slate-400">Fatalities aged 18-35 in India</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700">
+            <span class="text-[10px] text-slate-400 uppercase font-bold">Targeted Impact</span>
+            <div class="text-xl font-black text-emerald-400 mt-1">+40%</div>
+            <p class="text-[9px] text-slate-400">Helmet compliance boost in 30 days</p>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl glass-card border border-slate-700 space-y-2 text-xs">
+          <h4 class="font-bold text-white flex items-center gap-1.5">
+            <i data-lucide="check-check" class="w-4 h-4 text-indigo-400"></i> Why G.A.T.E. Scales:
+          </h4>
+          <ul class="text-slate-300 space-y-1.5 text-[11px] list-disc list-inside">
+            <li><strong>Zero municipal capital expenditure:</strong> Uses student PWA & existing entry gates.</li>
+            <li><strong>Decentralized:</strong> Scales via 150+ Yi YUVA student chapters across Western Region.</li>
+            <li><strong>CII Synergies:</strong> Non-cash incentives financed through retail & corporate CSR partners.</li>
+          </ul>
+        </div>
+      </section>
+
     </main>
 
-    <nav class="fixed bottom-0 w-full max-w-md bg-slate-900/90 backdrop-blur border-t border-slate-800 py-2 px-6 flex justify-between items-center z-30">
-      <button onclick="switchTab('checkin')" id="nav-checkin" class="flex flex-col items-center text-indigo-400 transition">
+    <nav class="absolute bottom-0 w-full glass-card border-t border-slate-800/80 py-2.5 px-4 flex justify-around items-center z-40 bg-slate-900/90">
+      <button onclick="switchTab('checkin')" id="nav-checkin" class="flex flex-col items-center text-indigo-400 font-bold transition">
         <i data-lucide="scan" class="w-5 h-5"></i>
-        <span class="text-[10px] mt-1 font-medium">Check-In</span>
+        <span class="text-[9px] mt-1 tracking-wider uppercase">Scanner</span>
       </button>
       <button onclick="switchTab('leaderboard')" id="nav-leaderboard" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
         <i data-lucide="trophy" class="w-5 h-5"></i>
-        <span class="text-[10px] mt-1 font-medium">Standings</span>
+        <span class="text-[9px] mt-1 tracking-wider uppercase">Ranking</span>
       </button>
       <button onclick="switchTab('rewards')" id="nav-rewards" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
         <i data-lucide="gift" class="w-5 h-5"></i>
-        <span class="text-[10px] mt-1 font-medium">Perks</span>
+        <span class="text-[9px] mt-1 tracking-wider uppercase">Perks</span>
+      </button>
+      <button onclick="switchTab('judges')" id="nav-judges" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
+        <i data-lucide="file-text" class="w-5 h-5"></i>
+        <span class="text-[9px] mt-1 tracking-wider uppercase">Pitch Data</span>
       </button>
     </nav>
 
@@ -197,23 +277,21 @@
     }
 
     function updateUI() {
-      document.getElementById('userPoints').innerText = `${state.points} pts`;
+      document.getElementById('userPoints').innerText = `${state.points} PTS`;
       document.getElementById('streakCount').innerText = state.streak;
       localStorage.setItem('gate_points', state.points);
       localStorage.setItem('gate_streak', state.streak);
     }
 
     function switchTab(tabId) {
-      document.getElementById('checkin-section').classList.add('hidden');
-      document.getElementById('leaderboard-section').classList.add('hidden');
-      document.getElementById('rewards-section').classList.add('hidden');
-
-      document.getElementById('nav-checkin').className = "flex flex-col items-center text-slate-400 transition";
-      document.getElementById('nav-leaderboard').className = "flex flex-col items-center text-slate-400 transition";
-      document.getElementById('nav-rewards').className = "flex flex-col items-center text-slate-400 transition";
+      const tabs = ['checkin', 'leaderboard', 'rewards', 'judges'];
+      tabs.forEach(t => {
+        document.getElementById(`${t}-section`).classList.add('hidden');
+        document.getElementById(`nav-${t}`).className = "flex flex-col items-center text-slate-400 hover:text-slate-200 transition";
+      });
 
       document.getElementById(`${tabId}-section`).classList.remove('hidden');
-      document.getElementById(`nav-${tabId}`).className = "flex flex-col items-center text-indigo-400 font-semibold transition";
+      document.getElementById(`nav-${tabId}`).className = "flex flex-col items-center text-indigo-400 font-bold transition";
     }
 
     function handleCheckIn() {
@@ -222,8 +300,8 @@
       const msg = document.getElementById('feedbackMsg');
 
       if (!helmet || !speed) {
-        msg.className = "text-xs font-semibold mt-2.5 text-rose-400";
-        msg.innerText = "⚠️ Incomplete compliance: Helmet & speed verification required.";
+        msg.className = "text-xs font-bold mt-2.5 text-rose-400";
+        msg.innerText = "⚠️ Non-compliant: Both Helmet & Speed criteria required.";
         return;
       }
 
@@ -232,15 +310,22 @@
       
       const kk = state.colleges.find(c => c.name === "KKWIEER Nashik");
       if (kk) {
-        kk.score += 15;
+        kk.score += 20;
         kk.compliance = Math.min(99, kk.compliance + 1);
       }
 
       updateUI();
       renderLeaderboard();
 
-      msg.className = "text-xs font-semibold mt-2.5 text-emerald-400";
-      msg.innerText = "✅ +30 Points logged! KKWIEER Safety Index boosted.";
+      // Confetti burst on successful check-in
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.7 }
+      });
+
+      msg.className = "text-xs font-bold mt-2.5 text-emerald-400";
+      msg.innerText = "🎉 +30 PTS Earned! KKWIEER Safety Score boosted.";
 
       const btn = document.getElementById('scanBtn');
       btn.disabled = true;
@@ -257,19 +342,19 @@
       state.colleges.sort((a, b) => b.score - a.score);
 
       list.innerHTML = state.colleges.map((c, i) => `
-        <div class="p-3 rounded-xl border ${c.isUser ? 'bg-indigo-950/40 border-indigo-500/40' : 'bg-slate-800/40 border-slate-700/60'} flex items-center justify-between">
+        <div class="p-3.5 rounded-2xl border transition-all ${c.isUser ? 'bg-indigo-950/60 border-indigo-500/50 glow-indigo' : 'bg-slate-800/40 border-slate-700/60'} flex items-center justify-between">
           <div class="flex items-center space-x-3">
-            <span class="w-6 text-center font-mono font-bold ${i === 0 ? 'text-amber-400' : 'text-slate-400'} text-xs">#${i + 1}</span>
+            <span class="w-6 text-center font-mono font-black ${i === 0 ? 'text-amber-400' : 'text-slate-400'} text-xs">#${i + 1}</span>
             <div>
               <h4 class="text-xs font-bold ${c.isUser ? 'text-indigo-300' : 'text-white'} flex items-center gap-1.5">
-                ${c.name} ${c.isUser ? '<span class="text-[9px] bg-indigo-500/20 text-indigo-400 px-1.5 py-0.2 rounded">You</span>' : ''}
+                ${c.name} ${c.isUser ? '<span class="text-[9px] bg-indigo-500/30 text-indigo-300 px-1.5 py-0.2 rounded font-mono font-bold">You</span>' : ''}
               </h4>
-              <p class="text-[10px] text-slate-400">${c.compliance}% Verified Safe Rate</p>
+              <p class="text-[10px] text-slate-400 font-medium">${c.compliance}% Verified Safe Rate</p>
             </div>
           </div>
           <div class="text-right">
-            <span class="text-xs font-bold text-white font-mono">${c.score}</span>
-            <p class="text-[9px] text-slate-400 uppercase">Pts</p>
+            <span class="text-sm font-black text-white font-mono">${c.score}</span>
+            <p class="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Index Pts</p>
           </div>
         </div>
       `).join('');
@@ -279,7 +364,8 @@
       if (state.points >= cost) {
         state.points -= cost;
         updateUI();
-        alert(`🎉 Success! You claimed "${title}". Show receipt at counter.`);
+        confetti({ particleCount: 35, spread: 50 });
+        alert(`🎉 Success! You claimed "${title}". Show your active voucher badge at the desk.`);
       } else {
         alert(`❌ Insufficient points. You need ${cost - state.points} more points.`);
       }
