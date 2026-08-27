@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project G.A.T.E. | Road Safety Engine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @keyframes pulse-glow {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 1; }
+    }
+    .pulse-effect {
+      animation: pulse-glow 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased flex flex-col items-center">
+
+  <div class="w-full max-w-md bg-slate-900 min-h-screen border-x border-slate-800 shadow-2xl flex flex-col pb-20">
+    
+    <header class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80 backdrop-blur sticky top-0 z-20">
+      <div class="flex items-center space-x-2">
+        <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+          <i data-lucide="shield-alert" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h1 class="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
+            Project G.A.T.E. <span class="text-[10px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded-full font-mono">Yi YUVA</span>
+          </h1>
+          <p class="text-[11px] text-slate-400">Nashik Zone Compliance Engine</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 bg-slate-800/80 px-2.5 py-1 rounded-full border border-slate-700">
+        <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
+        <span id="userPoints" class="text-xs font-bold text-amber-300">120 pts</span>
+      </div>
+    </header>
+
+    <main class="flex-1 p-4 space-y-4">
+
+      <section id="checkin-section" class="space-y-4">
+        
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/60 shadow-lg">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Active Commuter</span>
+              <h2 class="text-lg font-bold text-white mt-0.5">Aditya Chate</h2>
+              <p class="text-xs text-slate-400">KKWIEER • Electrical Dept</p>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium">Verified Rider</span>
+              <p class="text-xs text-slate-300 mt-1 font-mono">🔥 <span id="streakCount">4</span> Days Streak</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-800/60 border border-slate-700 text-center relative overflow-hidden">
+          <div class="inline-flex p-3 rounded-full bg-slate-900/80 border border-slate-700 mb-3 text-slate-300">
+            <i data-lucide="scan-line" class="w-7 h-7 text-indigo-400 pulse-effect"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-white">Campus Gate Check-In</h3>
+          <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+            Verify helmet and safe speed entry at KKWIEER Main Gate checkpoint.
+          </p>
+
+          <div class="mt-4 space-y-2 text-left bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-xs">
+            <label class="flex items-center space-x-2 cursor-pointer text-slate-300">
+              <input type="checkbox" id="helmetCheck" checked class="w-4 h-4 rounded border-slate-700 text-indigo-600 focus:ring-0 focus:ring-offset-0 bg-slate-800" />
+              <span>Wearing ISI / DOT Certified Helmet</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer text-slate-300">
+              <input type="checkbox" id="speedCheck" checked class="w-4 h-4 rounded border-slate-700 text-indigo-600 focus:ring-0 focus:ring-offset-0 bg-slate-800" />
+              <span>Campus Entry Speed Under 20 km/h</span>
+            </label>
+          </div>
+
+          <button id="scanBtn" onclick="handleCheckIn()" class="mt-4 w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] transition-all rounded-xl font-bold text-sm text-white shadow-lg shadow-indigo-600/30 flex items-center justify-center space-x-2">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            <span>Simulate Gate Check-in (+30 pts)</span>
+          </button>
+          
+          <p id="feedbackMsg" class="text-xs font-medium mt-2.5 h-4 transition-opacity"></p>
+        </div>
+
+      </section>
+
+      <section id="leaderboard-section" class="hidden space-y-3">
+        <div class="flex justify-between items-center mb-1">
+          <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
+            <i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i> Nashik Safety Index
+          </h2>
+          <span class="text-[11px] text-slate-400">Live Chapter Standings</span>
+        </div>
+
+        <div id="leaderboardList" class="space-y-2">
+          </div>
+
+        <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-300/90 leading-relaxed flex items-start space-x-2 mt-4">
+          <i data-lucide="info" class="w-4 h-4 flex-shrink-0 mt-0.5"></i>
+          <span><b>Peer Norm Effect:</b> Individual student compliance directly increases institutional rank, driving collective accountability.</span>
+        </div>
+      </section>
+
+      <section id="rewards-section" class="hidden space-y-3">
+        <div class="flex justify-between items-center mb-1">
+          <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
+            <i data-lucide="gift" class="w-4 h-4 text-emerald-400"></i> Ecosystem Incentives
+          </h2>
+          <span class="text-[11px] text-slate-400">CII & Campus Perks</span>
+        </div>
+
+        <div class="space-y-2.5">
+          <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <i data-lucide="parking-circle" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-white">Campus VIP Parking Pass</h4>
+                <p class="text-[10px] text-slate-400">Reserved slot near Main Gate</p>
+              </div>
+            </div>
+            <button onclick="claimReward(150, 'VIP Parking Pass')" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 active:scale-95 text-xs font-semibold rounded-lg text-emerald-300 border border-emerald-500/30 transition">
+              150 pts
+            </button>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                <i data-lucide="fuel" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-white">₹100 Fuel Loyalty Coupon</h4>
+                <p class="text-[10px] text-slate-400">Partner petrol pumps (Nashik)</p>
+              </div>
+            </div>
+            <button onclick="claimReward(250, '₹100 Fuel Coupon')" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 active:scale-95 text-xs font-semibold rounded-lg text-indigo-300 border border-indigo-500/30 transition">
+              250 pts
+            </button>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                <i data-lucide="coffee" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-white">Canteen Fast-Track Card</h4>
+                <p class="text-[10px] text-slate-400">Priority counter access for 1 week</p>
+              </div>
+            </div>
+            <button onclick="claimReward(100, 'Canteen Fast-Track')" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 active:scale-95 text-xs font-semibold rounded-lg text-amber-300 border border-amber-500/30 transition">
+              100 pts
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="fixed bottom-0 w-full max-w-md bg-slate-900/90 backdrop-blur border-t border-slate-800 py-2 px-6 flex justify-between items-center z-30">
+      <button onclick="switchTab('checkin')" id="nav-checkin" class="flex flex-col items-center text-indigo-400 transition">
+        <i data-lucide="scan" class="w-5 h-5"></i>
+        <span class="text-[10px] mt-1 font-medium">Check-In</span>
+      </button>
+      <button onclick="switchTab('leaderboard')" id="nav-leaderboard" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
+        <i data-lucide="trophy" class="w-5 h-5"></i>
+        <span class="text-[10px] mt-1 font-medium">Standings</span>
+      </button>
+      <button onclick="switchTab('rewards')" id="nav-rewards" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
+        <i data-lucide="gift" class="w-5 h-5"></i>
+        <span class="text-[10px] mt-1 font-medium">Perks</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script>
+    let state = {
+      points: parseInt(localStorage.getItem('gate_points')) || 120,
+      streak: parseInt(localStorage.getItem('gate_streak')) || 4,
+      colleges: [
+        { name: "KKWIEER Nashik", score: 842, compliance: 78, isUser: true },
+        { name: "Sandip University", score: 790, compliance: 71, isUser: false },
+        { name: "MET BKC Nashik", score: 715, compliance: 64, isUser: false },
+        { name: "KBTCOE Nashik", score: 680, compliance: 59, isUser: false }
+      ]
+    };
+
+    function init() {
+      lucide.createIcons();
+      updateUI();
+      renderLeaderboard();
+    }
+
+    function updateUI() {
+      document.getElementById('userPoints').innerText = `${state.points} pts`;
+      document.getElementById('streakCount').innerText = state.streak;
+      localStorage.setItem('gate_points', state.points);
+      localStorage.setItem('gate_streak', state.streak);
+    }
+
+    function switchTab(tabId) {
+      document.getElementById('checkin-section').classList.add('hidden');
+      document.getElementById('leaderboard-section').classList.add('hidden');
+      document.getElementById('rewards-section').classList.add('hidden');
+
+      document.getElementById('nav-checkin').className = "flex flex-col items-center text-slate-400 transition";
+      document.getElementById('nav-leaderboard').className = "flex flex-col items-center text-slate-400 transition";
+      document.getElementById('nav-rewards').className = "flex flex-col items-center text-slate-400 transition";
+
+      document.getElementById(`${tabId}-section`).classList.remove('hidden');
+      document.getElementById(`nav-${tabId}`).className = "flex flex-col items-center text-indigo-400 font-semibold transition";
+    }
+
+    function handleCheckIn() {
+      const helmet = document.getElementById('helmetCheck').checked;
+      const speed = document.getElementById('speedCheck').checked;
+      const msg = document.getElementById('feedbackMsg');
+
+      if (!helmet || !speed) {
+        msg.className = "text-xs font-semibold mt-2.5 text-rose-400";
+        msg.innerText = "⚠️ Incomplete compliance: Helmet & speed verification required.";
+        return;
+      }
+
+      state.points += 30;
+      state.streak += 1;
+      
+      const kk = state.colleges.find(c => c.name === "KKWIEER Nashik");
+      if (kk) {
+        kk.score += 15;
+        kk.compliance = Math.min(99, kk.compliance + 1);
+      }
+
+      updateUI();
+      renderLeaderboard();
+
+      msg.className = "text-xs font-semibold mt-2.5 text-emerald-400";
+      msg.innerText = "✅ +30 Points logged! KKWIEER Safety Index boosted.";
+
+      const btn = document.getElementById('scanBtn');
+      btn.disabled = true;
+      btn.classList.add('opacity-50', 'cursor-not-allowed');
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        msg.innerText = "";
+      }, 3500);
+    }
+
+    function renderLeaderboard() {
+      const list = document.getElementById('leaderboardList');
+      state.colleges.sort((a, b) => b.score - a.score);
+
+      list.innerHTML = state.colleges.map((c, i) => `
+        <div class="p-3 rounded-xl border ${c.isUser ? 'bg-indigo-950/40 border-indigo-500/40' : 'bg-slate-800/40 border-slate-700/60'} flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <span class="w-6 text-center font-mono font-bold ${i === 0 ? 'text-amber-400' : 'text-slate-400'} text-xs">#${i + 1}</span>
+            <div>
+              <h4 class="text-xs font-bold ${c.isUser ? 'text-indigo-300' : 'text-white'} flex items-center gap-1.5">
+                ${c.name} ${c.isUser ? '<span class="text-[9px] bg-indigo-500/20 text-indigo-400 px-1.5 py-0.2 rounded">You</span>' : ''}
+              </h4>
+              <p class="text-[10px] text-slate-400">${c.compliance}% Verified Safe Rate</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-bold text-white font-mono">${c.score}</span>
+            <p class="text-[9px] text-slate-400 uppercase">Pts</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function claimReward(cost, title) {
+      if (state.points >= cost) {
+        state.points -= cost;
+        updateUI();
+        alert(`🎉 Success! You claimed "${title}". Show receipt at counter.`);
+      } else {
+        alert(`❌ Insufficient points. You need ${cost - state.points} more points.`);
+      }
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
