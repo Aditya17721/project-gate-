@@ -4,8 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Project G.A.T.E. | Road Safety Engine</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti CDN -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   
   <style>
@@ -33,8 +36,10 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased flex justify-center items-center p-0 sm:p-4">
 
+  <!-- Mobile Screen Container -->
   <div class="w-full max-w-md bg-slate-900 min-h-screen sm:min-h-[844px] sm:max-h-[880px] sm:rounded-[36px] border border-slate-800 shadow-2xl flex flex-col overflow-hidden relative">
     
+    <!-- Top System Bar -->
     <header class="p-4 border-b border-slate-800/80 glass-card sticky top-0 z-30 flex items-center justify-between">
       <div class="flex items-center space-x-2.5">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20">
@@ -49,16 +54,20 @@
         </div>
       </div>
       
+      <!-- Safe Points Badge -->
       <div class="flex items-center gap-1.5 bg-slate-800/90 border border-amber-500/30 px-3 py-1.5 rounded-full glow-amber">
         <i data-lucide="zap" class="w-4 h-4 text-amber-400 fill-amber-400"></i>
         <span id="userPoints" class="text-xs font-black text-amber-300 tracking-wide font-mono">120 PTS</span>
       </div>
     </header>
 
+    <!-- Main Content Area (Scrollable) -->
     <main class="flex-1 overflow-y-auto p-4 space-y-4 pb-24">
 
+      <!-- ================= SECTION 1: SCANNER & GATE CHECK-IN ================= -->
       <section id="checkin-section" class="space-y-4">
         
+        <!-- Active Commuter Profile & Persona Selector -->
         <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-950/60 via-slate-900 to-slate-900 border border-indigo-500/20 relative overflow-hidden shadow-xl">
           <div class="flex justify-between items-start">
             <div class="flex-1">
@@ -83,26 +92,44 @@
           </div>
         </div>
 
+        <!-- High-Tech Gate Scanner with Live Camera Stream -->
         <div class="p-5 rounded-3xl glass-card border border-slate-700/60 text-center relative overflow-hidden glow-indigo">
           <div class="flex justify-between items-center mb-3">
             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Entry Viewfinder</span>
             <span id="gateLabel" class="text-[10px] text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-md font-mono">GATE #01 • PANCHAVATI</span>
           </div>
 
-          <div class="relative w-full h-44 bg-slate-950/80 rounded-2xl border-2 border-indigo-500/30 flex items-center justify-center overflow-hidden group">
-            <div class="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent laser-line shadow-[0_0_12px_#22d3ee]"></div>
+          <!-- Real Camera Viewfinder Container -->
+          <div class="relative w-full h-52 bg-slate-950 rounded-2xl border-2 border-indigo-500/40 flex items-center justify-center overflow-hidden group shadow-inner">
             
-            <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-cyan-400"></div>
-            <div class="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-cyan-400"></div>
-            <div class="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-cyan-400"></div>
-            <div class="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-cyan-400"></div>
+            <!-- Video Feed Element -->
+            <video id="cameraFeed" autoplay playsinline muted class="w-full h-full object-cover hidden"></video>
 
-            <div class="flex flex-col items-center justify-center space-y-1 z-10">
-              <i data-lucide="qr-code" class="w-14 h-14 text-indigo-400/60 stroke-[1.5]"></i>
-              <span class="text-[10px] text-slate-400 tracking-wider uppercase font-mono">Align Gate QR Code</span>
+            <!-- Camera Placeholder / Start Button UI -->
+            <div id="cameraPrompt" class="flex flex-col items-center justify-center space-y-2 z-10 px-4 text-center">
+              <button onclick="startCamera()" class="p-3 bg-indigo-600/80 hover:bg-indigo-500 text-white rounded-full shadow-lg transition active:scale-95 flex items-center justify-center">
+                <i data-lucide="camera" class="w-6 h-6"></i>
+              </button>
+              <span class="text-[11px] font-semibold text-slate-300">Tap to Enable Gate Camera</span>
+              <span class="text-[9px] text-slate-500">Allows instant AR verification at entry</span>
+            </div>
+
+            <!-- Scanning Laser Line Overlay -->
+            <div class="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent laser-line shadow-[0_0_12px_#22d3ee] pointer-events-none z-20"></div>
+            
+            <!-- Corner Brackets Overlay -->
+            <div class="absolute top-2.5 left-2.5 w-5 h-5 border-t-2 border-l-2 border-cyan-400 pointer-events-none z-20"></div>
+            <div class="absolute top-2.5 right-2.5 w-5 h-5 border-t-2 border-r-2 border-cyan-400 pointer-events-none z-20"></div>
+            <div class="absolute bottom-2.5 left-2.5 w-5 h-5 border-b-2 border-l-2 border-cyan-400 pointer-events-none z-20"></div>
+            <div class="absolute bottom-2.5 right-2.5 w-5 h-5 border-b-2 border-r-2 border-cyan-400 pointer-events-none z-20"></div>
+
+            <!-- Live Camera Status Tag -->
+            <div id="camStatusTag" class="hidden absolute top-2 bg-slate-900/80 backdrop-blur border border-emerald-500/40 px-2 py-0.5 rounded-full text-[9px] text-emerald-400 font-mono z-20 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> LIVE OPTICAL FEED
             </div>
           </div>
 
+          <!-- Micro-Verification Checklist -->
           <div class="mt-4 space-y-2 text-left bg-slate-950/50 p-3.5 rounded-xl border border-slate-800 text-xs">
             <label class="flex items-center space-x-2.5 cursor-pointer text-slate-300 hover:text-white transition">
               <input type="checkbox" id="helmetCheck" checked class="w-4 h-4 rounded border-slate-700 text-indigo-600 focus:ring-0 bg-slate-800" />
@@ -114,6 +141,7 @@
             </label>
           </div>
 
+          <!-- Trigger Action -->
           <button id="scanBtn" onclick="handleCheckIn()" class="mt-4 w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 active:scale-[0.98] transition-all rounded-xl font-extrabold text-sm text-white shadow-lg shadow-indigo-500/25 flex items-center justify-center space-x-2">
             <i data-lucide="scan-face" class="w-4 h-4"></i>
             <span>Log Safe Commute (+30 PTS)</span>
@@ -124,6 +152,7 @@
 
       </section>
 
+      <!-- ================= SECTION 2: LIVE LEADERBOARD ================= -->
       <section id="leaderboard-section" class="hidden space-y-3">
         <div class="flex justify-between items-center mb-1">
           <div>
@@ -146,6 +175,7 @@
         </div>
       </section>
 
+      <!-- ================= SECTION 3: REWARDS STORE ================= -->
       <section id="rewards-section" class="hidden space-y-3">
         <div class="flex justify-between items-center mb-1">
           <div>
@@ -205,6 +235,7 @@
         </div>
       </section>
 
+      <!-- ================= SECTION 4: DATA / JUDGES DECK ================= -->
       <section id="judges-section" class="hidden space-y-3">
         <div class="flex justify-between items-center mb-1">
           <div>
@@ -242,6 +273,7 @@
 
     </main>
 
+    <!-- Bottom Navigation Bar -->
     <nav class="absolute bottom-0 w-full glass-card border-t border-slate-800/80 py-2.5 px-4 flex justify-around items-center z-40 bg-slate-900/90">
       <button onclick="switchTab('checkin')" id="nav-checkin" class="flex flex-col items-center text-indigo-400 font-bold transition">
         <i data-lucide="scan" class="w-5 h-5"></i>
@@ -305,11 +337,46 @@
       ]
     };
 
+    let videoStream = null;
+
     function init() {
       lucide.createIcons();
       document.getElementById('personaSelector').value = currentPersonaKey;
       applyPersonaUI();
       renderLeaderboard();
+      // Attempt to auto start camera
+      startCamera();
+    }
+
+    // Camera Access Handler
+    async function startCamera() {
+      const video = document.getElementById('cameraFeed');
+      const prompt = document.getElementById('cameraPrompt');
+      const tag = document.getElementById('camStatusTag');
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' }
+        });
+        videoStream = stream;
+        video.srcObject = stream;
+        video.classList.remove('hidden');
+        prompt.classList.add('hidden');
+        tag.classList.remove('hidden');
+      } catch (err) {
+        console.warn("Camera stream inactive or denied:", err);
+        // Fallback gracefully to scanner placeholder
+        video.classList.add('hidden');
+        prompt.classList.remove('hidden');
+        tag.classList.add('hidden');
+      }
+    }
+
+    function stopCamera() {
+      if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+        videoStream = null;
+      }
     }
 
     function changePersona(key) {
@@ -347,6 +414,12 @@
 
       document.getElementById(`${tabId}-section`).classList.remove('hidden');
       document.getElementById(`nav-${tabId}`).className = "flex flex-col items-center text-indigo-400 font-bold transition";
+
+      if (tabId === 'checkin') {
+        startCamera();
+      } else {
+        stopCamera();
+      }
     }
 
     function handleCheckIn() {
