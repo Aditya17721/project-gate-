@@ -379,4 +379,14 @@
       if (state.points >= cost) {
         state.points -= cost;
         updateUI();
-        confetti({ part
+        confetti({ particleCount: 35, spread: 50 });
+        alert(`🎉 Success! You claimed "${title}". Show your active voucher badge at the desk.`);
+      } else {
+        alert(`❌ Insufficient points. You need ${cost - state.points} more points.`);
+      }
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
