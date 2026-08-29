@@ -148,7 +148,7 @@
           <!-- Trigger Action -->
           <button id="scanBtn" onclick="handleCheckIn()" class="mt-4 w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 active:scale-[0.98] transition-all rounded-xl font-extrabold text-sm text-white shadow-lg shadow-indigo-500/25 flex items-center justify-center space-x-2">
             <i data-lucide="scan-face" class="w-4 h-4"></i>
-            <span>Log Safe Commute (+30 PTS)</span>
+            <span>Log Safe Commute (+20 PTS)</span>
           </button>
           
           <p id="feedbackMsg" class="text-xs font-semibold mt-2.5 h-4 transition-opacity"></p>
@@ -509,8 +509,8 @@
 
       msg.className = "text-xs font-bold mt-2.5 text-emerald-400";
       msg.innerText = currentPersona.college 
-        ? `🎉 +30 PTS! ${currentPersona.college} score boosted.`
-        : "🎉 +30 PTS! Commute verification logged successfully.";
+        ? `🎉 +20 PTS! ${currentPersona.college} score boosted.`
+        : "🎉 +20 PTS! Commute verification logged successfully.";
 
       const btn = document.getElementById('scanBtn');
       btn.disabled = true;
