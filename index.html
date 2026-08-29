@@ -4,8 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Project G.A.T.E. | Road Safety Engine</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti CDN -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   
   <style>
@@ -36,8 +39,10 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased flex justify-center items-center p-0 sm:p-4">
 
+  <!-- Mobile Screen Container -->
   <div class="w-full max-w-md bg-slate-900 min-h-screen sm:min-h-[844px] sm:max-h-[880px] sm:rounded-[36px] border border-slate-800 shadow-2xl flex flex-col overflow-hidden relative">
     
+    <!-- Top System Bar -->
     <header class="p-4 border-b border-slate-800/80 glass-card sticky top-0 z-30 flex items-center justify-between">
       <div class="flex items-center space-x-2.5">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20">
@@ -52,21 +57,25 @@
         </div>
       </div>
       
+      <!-- Safe Points Badge & Live Sync Status -->
       <div class="flex items-center gap-2">
         <div class="flex items-center gap-1.5 bg-slate-800/90 border border-amber-500/30 px-3 py-1.5 rounded-full glow-amber">
           <i data-lucide="zap" class="w-4 h-4 text-amber-400 fill-amber-400"></i>
           <span id="userPoints" class="text-xs font-black text-amber-300 tracking-wide font-mono">0 PTS</span>
         </div>
-        <button onclick="resetScore()" title="Reset Points" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-full border border-slate-700 transition active:scale-95">
+        <button onclick="resetGlobalScores()" title="Reset Global Scores" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-full border border-slate-700 transition active:scale-95">
           <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
         </button>
       </div>
     </header>
 
+    <!-- Main Content Area -->
     <main class="flex-1 overflow-y-auto p-4 space-y-4 pb-24">
 
+      <!-- SECTION 1: SCANNER & GATE CHECK-IN -->
       <section id="checkin-section" class="space-y-4">
         
+        <!-- Active Commuter Profile & Persona Selector -->
         <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-950/60 via-slate-900 to-slate-900 border border-indigo-500/20 relative overflow-hidden shadow-xl">
           <div class="flex justify-between items-start">
             <div class="flex-1">
@@ -94,6 +103,7 @@
           </div>
         </div>
 
+        <!-- Gate Hardware Simulator -->
         <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-2">
@@ -115,6 +125,7 @@
           </div>
         </div>
 
+        <!-- Scanner Card -->
         <div id="scannerBox" class="p-5 rounded-3xl glass-card border border-slate-700/60 text-center relative overflow-hidden glow-indigo transition-all">
           <div class="flex justify-between items-center mb-3">
             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Gate Optical Scanner</span>
@@ -122,7 +133,6 @@
           </div>
 
           <div class="relative w-full h-48 bg-slate-950 rounded-2xl border-2 border-indigo-500/40 flex items-center justify-center overflow-hidden group shadow-inner">
-            
             <video id="cameraFeed" autoplay playsinline muted class="w-full h-full object-cover hidden"></video>
 
             <div id="cameraPrompt" class="flex flex-col items-center justify-center space-y-2 z-10 px-4 text-center">
@@ -134,7 +144,6 @@
             </div>
 
             <div class="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent laser-line shadow-[0_0_12px_#22d3ee] pointer-events-none z-20"></div>
-            
             <div class="absolute top-2.5 left-2.5 w-5 h-5 border-t-2 border-l-2 border-cyan-400 pointer-events-none z-20"></div>
             <div class="absolute top-2.5 right-2.5 w-5 h-5 border-t-2 border-r-2 border-cyan-400 pointer-events-none z-20"></div>
             <div class="absolute bottom-2.5 left-2.5 w-5 h-5 border-b-2 border-l-2 border-cyan-400 pointer-events-none z-20"></div>
@@ -145,9 +154,10 @@
             </div>
           </div>
 
+          <!-- Dynamic Token -->
           <div id="gateTokenCard" class="mt-3 p-2.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center justify-between text-xs">
             <div class="flex items-center space-x-2">
-              <i id="tokenIcon" data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
               <span id="tokenStatusText" class="font-bold text-emerald-300 text-[11px]">Dynamic Token: VERIFIED_SAFE_RIDE</span>
             </div>
             <span class="text-[9px] text-slate-400 font-mono">15s TOTP</span>
@@ -163,28 +173,24 @@
 
       </section>
 
+      <!-- SECTION 2: LIVE LEADERBOARD -->
       <section id="leaderboard-section" class="hidden space-y-3">
         <div class="flex justify-between items-center mb-1">
           <div>
             <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
               <i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i> Nashik Safety Index
             </h2>
-            <p class="text-[10px] text-slate-400">Real-Time Institutional Compliance Ranking</p>
+            <p class="text-[10px] text-slate-400">Real-Time Global Cloud Sync Feed</p>
           </div>
-          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono font-bold">LIVE FEED</span>
+          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono font-bold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> LIVE CLOUD
+          </span>
         </div>
 
         <div id="leaderboardList" class="space-y-2.5"></div>
-
-        <div class="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/25 text-xs text-amber-300/90 leading-relaxed flex items-start space-x-2.5 mt-4">
-          <i data-lucide="sparkles" class="w-5 h-5 flex-shrink-0 text-amber-400 mt-0.5"></i>
-          <div>
-            <strong class="text-amber-200">Behavioral Psychology Insight:</strong>
-            <p class="text-[11px] text-slate-300 mt-0.5">Individual non-compliant rides penalize the college's index score. Collective peer accountability replaces punitive police deterrence with campus pride.</p>
-          </div>
-        </div>
       </section>
 
+      <!-- SECTION 3: REWARDS STORE -->
       <section id="rewards-section" class="hidden space-y-3">
         <div class="flex justify-between items-center mb-1">
           <div>
@@ -197,7 +203,7 @@
         </div>
 
         <div class="space-y-3">
-          <div class="p-4 rounded-2xl glass-card border border-slate-700/60 flex justify-between items-center hover:border-emerald-500/40 transition">
+          <div class="p-4 rounded-2xl glass-card border border-slate-700/60 flex justify-between items-center">
             <div class="flex items-center space-x-3.5">
               <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <i data-lucide="car" class="w-5 h-5"></i>
@@ -207,12 +213,10 @@
                 <p class="text-[10px] text-slate-400">Priority gate bay for 1 full week</p>
               </div>
             </div>
-            <button onclick="claimReward(150, 'Campus VIP Parking')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-xs font-bold rounded-lg text-white shadow-md shadow-emerald-600/20 transition">
-              150 PTS
-            </button>
+            <button onclick="claimReward(150, 'Campus VIP Parking')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-xs font-bold rounded-lg text-white transition">150 PTS</button>
           </div>
 
-          <div class="p-4 rounded-2xl glass-card border border-slate-700/60 flex justify-between items-center hover:border-indigo-500/40 transition">
+          <div class="p-4 rounded-2xl glass-card border border-slate-700/60 flex justify-between items-center">
             <div class="flex items-center space-x-3.5">
               <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
                 <i data-lucide="fuel" class="w-5 h-5"></i>
@@ -222,28 +226,12 @@
                 <p class="text-[10px] text-slate-400">Redeemable at HP/IndianOil Nashik</p>
               </div>
             </div>
-            <button onclick="claimReward(250, '₹100 Fuel Coupon')" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-xs font-bold rounded-lg text-white shadow-md shadow-indigo-600/20 transition">
-              250 PTS
-            </button>
-          </div>
-
-          <div class="p-4 rounded-2xl glass-card border border-slate-700/60 flex justify-between items-center hover:border-amber-500/40 transition">
-            <div class="flex items-center space-x-3.5">
-              <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-                <i data-lucide="coffee" class="w-5 h-5"></i>
-              </div>
-              <div>
-                <h4 class="text-xs font-bold text-white">Canteen Express Pass</h4>
-                <p class="text-[10px] text-slate-400">Skip-the-line status at campus canteen</p>
-              </div>
-            </div>
-            <button onclick="claimReward(100, 'Canteen Express Pass')" class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-500 active:scale-95 text-xs font-bold rounded-lg text-white shadow-md shadow-amber-600/20 transition">
-              100 PTS
-            </button>
+            <button onclick="claimReward(250, '₹100 Fuel Coupon')" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-xs font-bold rounded-lg text-white transition">250 PTS</button>
           </div>
         </div>
       </section>
 
+      <!-- SECTION 4: DATA / JUDGES DECK -->
       <section id="judges-section" class="hidden space-y-3">
         <div class="flex justify-between items-center mb-1">
           <div>
@@ -266,21 +254,11 @@
             <p class="text-[9px] text-slate-400">Helmet compliance boost in 30 days</p>
           </div>
         </div>
-
-        <div class="p-4 rounded-2xl glass-card border border-slate-700 space-y-2 text-xs">
-          <h4 class="font-bold text-white flex items-center gap-1.5">
-            <i data-lucide="check-check" class="w-4 h-4 text-indigo-400"></i> Why G.A.T.E. Scales:
-          </h4>
-          <ul class="text-slate-300 space-y-1.5 text-[11px] list-disc list-inside">
-            <li><strong>Zero municipal capital expenditure:</strong> Uses student PWA & existing entry checkpoints.</li>
-            <li><strong>Decentralized:</strong> Scales via 150+ Yi YUVA student chapters across Western Region.</li>
-            <li><strong>CII Synergies:</strong> Non-cash incentives financed through retail & corporate CSR partners.</li>
-          </ul>
-        </div>
       </section>
 
     </main>
 
+    <!-- Bottom Navigation Bar -->
     <nav class="absolute bottom-0 w-full glass-card border-t border-slate-800/80 py-2.5 px-4 flex justify-around items-center z-40 bg-slate-900/90">
       <button onclick="switchTab('checkin')" id="nav-checkin" class="flex flex-col items-center text-indigo-400 font-bold transition">
         <i data-lucide="scan" class="w-5 h-5"></i>
@@ -303,6 +281,10 @@
   </div>
 
   <script>
+    // ================= REAL-TIME CLOUD DATABASE CONFIG =================
+    // Paste your Firebase Database URL below (make sure it ends with a slash /)
+    const FIREBASE_DB_URL = "YOUR_FIREBASE_URL_HERE/";
+
     const defaultColleges = [
       { name: "KKWIEER Nashik", score: 0, compliance: 0 },
       { name: "Sandip University", score: 0, compliance: 0 },
@@ -312,69 +294,21 @@
     ];
 
     const personas = {
-      kkwieer: {
-        name: "Student Commuter",
-        college: "KKWIEER Nashik",
-        subtext: "KKWIEER • Panchavati Campus",
-        gate: "GATE #01 • PANCHAVATI",
-        badge: "Verified",
-        points: 0,
-        streak: 0
-      },
-      met: {
-        name: "Student Commuter",
-        college: "MET BKC Nashik",
-        subtext: "MET BKC • Adgaon Campus",
-        gate: "GATE #01 • ADGAON CAMPUS",
-        badge: "Verified",
-        points: 0,
-        streak: 0
-      },
-      kbt: {
-        name: "Student Commuter",
-        college: "NDMVP KBTCOE",
-        subtext: "KBTCOE • Gangapur Road Hub",
-        gate: "MAIN GATE • GANGAPUR RD",
-        badge: "Verified",
-        points: 0,
-        streak: 0
-      },
-      ggs: {
-        name: "Student Commuter",
-        college: "GGSCOERC Nashik",
-        subtext: "Guru Gobind Singh COE • Khalsa Hub",
-        gate: "GATE #02 • INDIRA NAGAR",
-        badge: "Verified",
-        points: 0,
-        streak: 0
-      },
-      sandip: {
-        name: "Student Commuter",
-        college: "Sandip University",
-        subtext: "Sandip Univ • Mahiravani Hub",
-        gate: "MAIN ACCESS BAY",
-        badge: "Verified",
-        points: 0,
-        streak: 0
-      },
-      judge: {
-        name: "Guest Evaluator",
-        college: null,
-        subtext: "Future 6.0 Interactive Evaluation Mode",
-        gate: "EVALUATION CHECKPOINT",
-        badge: "Guest Mode",
-        points: 0,
-        streak: 0
-      }
+      kkwieer: { name: "Student Commuter", college: "KKWIEER Nashik", subtext: "KKWIEER • Panchavati Campus", gate: "GATE #01 • PANCHAVATI", badge: "Verified", points: 0, streak: 0 },
+      met: { name: "Student Commuter", college: "MET BKC Nashik", subtext: "MET BKC • Adgaon Campus", gate: "GATE #01 • ADGAON CAMPUS", badge: "Verified", points: 0, streak: 0 },
+      kbt: { name: "Student Commuter", college: "NDMVP KBTCOE", subtext: "KBTCOE • Gangapur Road Hub", gate: "MAIN GATE • GANGAPUR RD", badge: "Verified", points: 0, streak: 0 },
+      ggs: { name: "Student Commuter", college: "GGSCOERC Nashik", subtext: "Guru Gobind Singh COE • Khalsa Hub", gate: "GATE #02 • INDIRA NAGAR", badge: "Verified", points: 0, streak: 0 },
+      sandip: { name: "Student Commuter", college: "Sandip University", subtext: "Sandip Univ • Mahiravani Hub", gate: "MAIN ACCESS BAY", badge: "Verified", points: 0, streak: 0 },
+      judge: { name: "Guest Evaluator", college: null, subtext: "Future 6.0 Interactive Evaluation Mode", gate: "EVALUATION CHECKPOINT", badge: "Guest Mode", points: 0, streak: 0 }
     };
 
-    let currentPersonaKey = localStorage.getItem('gate_persona_v3') || 'kkwieer';
+    let currentPersonaKey = localStorage.getItem('gate_persona_v5') || 'kkwieer';
     let currentPersona = personas[currentPersonaKey] || personas.kkwieer;
 
     let state = {
-      points: parseInt(localStorage.getItem('gate_points_v3_' + currentPersonaKey)) || 0,
-      streak: parseInt(localStorage.getItem('gate_streak_v3_' + currentPersonaKey)) || 0,
-      colleges: JSON.parse(localStorage.getItem('gate_colleges_v3')) || JSON.parse(JSON.stringify(defaultColleges))
+      points: parseInt(localStorage.getItem('gate_points_v5_' + currentPersonaKey)) || 0,
+      streak: parseInt(localStorage.getItem('gate_streak_v5_' + currentPersonaKey)) || 0,
+      colleges: JSON.parse(JSON.stringify(defaultColleges))
     };
 
     let videoStream = null;
@@ -383,16 +317,42 @@
       lucide.createIcons();
       document.getElementById('personaSelector').value = currentPersonaKey;
       applyPersonaUI();
-      renderLeaderboard();
       syncHardwareState();
       startCamera();
+      
+      // Real-Time Cloud Polling & Sync (Every 1.5 seconds)
+      fetchCloudScores();
+      setInterval(fetchCloudScores, 1500);
     }
 
-    // Hardware State Synchronization (PASS vs VIOLATION TOKEN)
+    async function fetchCloudScores() {
+      if (FIREBASE_DB_URL.includes("YOUR_FIREBASE_URL_HERE")) return;
+      try {
+        const res = await fetch(`${FIREBASE_DB_URL}colleges.json`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && Array.isArray(data)) {
+            state.colleges = data;
+            renderLeaderboard();
+          }
+        }
+      } catch (e) {}
+    }
+
+    async function pushCloudScores() {
+      if (FIREBASE_DB_URL.includes("YOUR_FIREBASE_URL_HERE")) return;
+      try {
+        await fetch(`${FIREBASE_DB_URL}colleges.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(state.colleges)
+        });
+      } catch (e) {}
+    }
+
     function syncHardwareState() {
       const helmet = document.getElementById('helmetDetected').checked;
       const speed = document.getElementById('speedCompliant').checked;
-      
       const tokenCard = document.getElementById('gateTokenCard');
       const tokenStatusText = document.getElementById('tokenStatusText');
       const btnLabel = document.getElementById('btnLabel');
@@ -429,7 +389,6 @@
         prompt.classList.add('hidden');
         tag.classList.remove('hidden');
       } catch (err) {
-        console.warn("Camera stream inactive or denied:", err);
         video.classList.add('hidden');
         prompt.classList.remove('hidden');
         tag.classList.add('hidden');
@@ -445,11 +404,11 @@
 
     function changePersona(key) {
       currentPersonaKey = key;
-      localStorage.setItem('gate_persona_v3', key);
+      localStorage.setItem('gate_persona_v5', key);
       currentPersona = personas[key];
       
-      state.points = parseInt(localStorage.getItem('gate_points_v3_' + key)) || 0;
-      state.streak = parseInt(localStorage.getItem('gate_streak_v3_' + key)) || 0;
+      state.points = parseInt(localStorage.getItem('gate_points_v5_' + key)) || 0;
+      state.streak = parseInt(localStorage.getItem('gate_streak_v5_' + key)) || 0;
       
       applyPersonaUI();
       renderLeaderboard();
@@ -466,26 +425,22 @@
     function updateUI() {
       document.getElementById('userPoints').innerText = `${state.points} PTS`;
       document.getElementById('streakCount').innerText = state.streak;
-      localStorage.setItem('gate_points_v3_' + currentPersonaKey, state.points);
-      localStorage.setItem('gate_streak_v3_' + currentPersonaKey, state.streak);
-      localStorage.setItem('gate_colleges_v3', JSON.stringify(state.colleges));
+      localStorage.setItem('gate_points_v5_' + currentPersonaKey, state.points);
+      localStorage.setItem('gate_streak_v5_' + currentPersonaKey, state.streak);
     }
 
-    function resetScore() {
-      localStorage.removeItem('gate_points_v3_' + currentPersonaKey);
-      localStorage.removeItem('gate_streak_v3_' + currentPersonaKey);
-      localStorage.removeItem('gate_colleges_v3');
-      
+    async function resetGlobalScores() {
       state.points = 0;
       state.streak = 0;
       state.colleges = JSON.parse(JSON.stringify(defaultColleges));
       
       updateUI();
       renderLeaderboard();
+      await pushCloudScores();
       
       const msg = document.getElementById('feedbackMsg');
       msg.className = "text-xs font-bold mt-2.5 text-slate-400";
-      msg.innerText = "🔄 Points and ranking reset to 0.";
+      msg.innerText = "🔄 Global Cloud Scores Reset across all devices.";
       setTimeout(() => { msg.innerText = ""; }, 2500);
     }
 
@@ -506,7 +461,7 @@
       }
     }
 
-    function handleCheckIn() {
+    async function handleCheckIn() {
       const helmet = document.getElementById('helmetDetected').checked;
       const speed = document.getElementById('speedCompliant').checked;
       const msg = document.getElementById('feedbackMsg');
@@ -514,7 +469,7 @@
         ? state.colleges.find(c => c.name === currentPersona.college) 
         : null;
 
-      // ================= SCENARIO 1: VIOLATION TOKEN =================
+      // NON-COMPLIANT
       if (!helmet || !speed) {
         state.streak = 0;
         state.points = Math.max(0, state.points - 10);
@@ -526,13 +481,12 @@
 
         updateUI();
         renderLeaderboard();
+        await pushCloudScores();
 
         msg.className = "text-xs font-bold mt-2.5 text-rose-400";
-        msg.innerText = "⚠️ Violation Logged: Streak reset to 0. College score penalized (-15 Index).";
-        
-        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        msg.innerText = "⚠️ Violation Logged: Streak reset to 0. College penalized (-15 Index).";
       } 
-      // ================= SCENARIO 2: VERIFIED SAFE TOKEN =================
+      // VERIFIED SAFE
       else {
         state.points += 20;
         state.streak += 1;
@@ -544,6 +498,7 @@
 
         updateUI();
         renderLeaderboard();
+        await pushCloudScores();
 
         confetti({
           particleCount: 50,
@@ -553,7 +508,7 @@
 
         msg.className = "text-xs font-bold mt-2.5 text-emerald-400";
         msg.innerText = currentPersona.college 
-          ? `🎉 +20 PTS! ${currentPersona.college} score boosted.`
+          ? `🎉 +20 PTS! ${currentPersona.college} score synced to cloud.`
           : "🎉 +20 PTS! Commute verification logged successfully.";
       }
 
@@ -569,9 +524,9 @@
 
     function renderLeaderboard() {
       const list = document.getElementById('leaderboardList');
-      state.colleges.sort((a, b) => b.score - a.score);
+      const sorted = [...state.colleges].sort((a, b) => b.score - a.score);
 
-      list.innerHTML = state.colleges.map((c, i) => {
+      list.innerHTML = sorted.map((c, i) => {
         const isSelected = (c.name === currentPersona.college);
         return `
           <div class="p-3.5 rounded-2xl border transition-all ${isSelected ? 'bg-indigo-950/60 border-indigo-500/50 glow-indigo' : 'bg-slate-800/40 border-slate-700/60'} flex items-center justify-between">
