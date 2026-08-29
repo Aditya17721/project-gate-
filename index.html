@@ -4,11 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Project G.A.T.E. | Road Safety Engine</title>
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Canvas Confetti CDN -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   
   <style>
@@ -32,14 +29,15 @@
     .glow-indigo {
       box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.35);
     }
+    .glow-rose {
+      box-shadow: 0 0 25px -5px rgba(244, 63, 94, 0.35);
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased flex justify-center items-center p-0 sm:p-4">
 
-  <!-- Mobile Screen Container -->
   <div class="w-full max-w-md bg-slate-900 min-h-screen sm:min-h-[844px] sm:max-h-[880px] sm:rounded-[36px] border border-slate-800 shadow-2xl flex flex-col overflow-hidden relative">
     
-    <!-- Top System Bar -->
     <header class="p-4 border-b border-slate-800/80 glass-card sticky top-0 z-30 flex items-center justify-between">
       <div class="flex items-center space-x-2.5">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20">
@@ -54,7 +52,6 @@
         </div>
       </div>
       
-      <!-- Safe Points Badge & Reset Action -->
       <div class="flex items-center gap-2">
         <div class="flex items-center gap-1.5 bg-slate-800/90 border border-amber-500/30 px-3 py-1.5 rounded-full glow-amber">
           <i data-lucide="zap" class="w-4 h-4 text-amber-400 fill-amber-400"></i>
@@ -66,13 +63,10 @@
       </div>
     </header>
 
-    <!-- Main Content Area (Scrollable) -->
     <main class="flex-1 overflow-y-auto p-4 space-y-4 pb-24">
 
-      <!-- ================= SECTION 1: SCANNER & GATE CHECK-IN ================= -->
       <section id="checkin-section" class="space-y-4">
         
-        <!-- Active Commuter Profile & Persona Selector -->
         <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-950/60 via-slate-900 to-slate-900 border border-indigo-500/20 relative overflow-hidden shadow-xl">
           <div class="flex justify-between items-start">
             <div class="flex-1">
@@ -81,7 +75,6 @@
                 <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Active Commuter</span>
               </div>
               
-              <!-- Persona Dropdown -->
               <select id="personaSelector" onchange="changePersona(this.value)" class="mt-1 bg-slate-800/90 border border-slate-700 text-white text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-500 w-full max-w-[240px]">
                 <option value="kkwieer">Student Commuter (KKWIEER)</option>
                 <option value="met">Student Commuter (MET BKC)</option>
@@ -101,15 +94,34 @@
           </div>
         </div>
 
-        <!-- Gate Scanner with Live Camera Stream -->
-        <div class="p-5 rounded-3xl glass-card border border-slate-700/60 text-center relative overflow-hidden glow-indigo">
+        <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="cpu" class="w-4 h-4 text-cyan-400"></i>
+              <span class="text-xs font-bold text-slate-200">Gate Edge AI Hardware Feed</span>
+            </div>
+            <span class="text-[9px] bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded font-mono">YOLOv8 + IR Sensor</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-xs pt-1">
+            <label class="flex items-center space-x-2 bg-slate-900 p-2 rounded-xl border border-slate-800 cursor-pointer hover:border-slate-700 transition">
+              <input type="checkbox" id="helmetDetected" onchange="syncHardwareState()" checked class="w-4 h-4 rounded text-cyan-500 bg-slate-800 border-slate-700 focus:ring-0">
+              <span class="text-[11px] text-slate-300">Helmet Detected</span>
+            </label>
+            <label class="flex items-center space-x-2 bg-slate-900 p-2 rounded-xl border border-slate-800 cursor-pointer hover:border-slate-700 transition">
+              <input type="checkbox" id="speedCompliant" onchange="syncHardwareState()" checked class="w-4 h-4 rounded text-cyan-500 bg-slate-800 border-slate-700 focus:ring-0">
+              <span class="text-[11px] text-slate-300">Speed &le; 20 km/h</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="scannerBox" class="p-5 rounded-3xl glass-card border border-slate-700/60 text-center relative overflow-hidden glow-indigo transition-all">
           <div class="flex justify-between items-center mb-3">
-            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Entry Viewfinder</span>
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Gate Optical Scanner</span>
             <span id="gateLabel" class="text-[10px] text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-md font-mono">GATE #01 • PANCHAVATI</span>
           </div>
 
-          <!-- Real Camera Viewfinder Container -->
-          <div class="relative w-full h-52 bg-slate-950 rounded-2xl border-2 border-indigo-500/40 flex items-center justify-center overflow-hidden group shadow-inner">
+          <div class="relative w-full h-48 bg-slate-950 rounded-2xl border-2 border-indigo-500/40 flex items-center justify-center overflow-hidden group shadow-inner">
             
             <video id="cameraFeed" autoplay playsinline muted class="w-full h-full object-cover hidden"></video>
 
@@ -118,7 +130,7 @@
                 <i data-lucide="camera" class="w-6 h-6"></i>
               </button>
               <span class="text-[11px] font-semibold text-slate-300">Tap to Enable Gate Camera</span>
-              <span class="text-[9px] text-slate-500">Allows instant AR verification at entry</span>
+              <span class="text-[9px] text-slate-500">Allows instant verification at gate entry</span>
             </div>
 
             <div class="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent laser-line shadow-[0_0_12px_#22d3ee] pointer-events-none z-20"></div>
@@ -129,34 +141,28 @@
             <div class="absolute bottom-2.5 right-2.5 w-5 h-5 border-b-2 border-r-2 border-cyan-400 pointer-events-none z-20"></div>
 
             <div id="camStatusTag" class="hidden absolute top-2 bg-slate-900/80 backdrop-blur border border-emerald-500/40 px-2 py-0.5 rounded-full text-[9px] text-emerald-400 font-mono z-20 flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> LIVE OPTICAL FEED
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> LIVE GATE OPTICAL FEED
             </div>
           </div>
 
-          <!-- Micro-Verification Checklist -->
-          <div class="mt-4 space-y-2 text-left bg-slate-950/50 p-3.5 rounded-xl border border-slate-800 text-xs">
-            <label class="flex items-center space-x-2.5 cursor-pointer text-slate-300 hover:text-white transition">
-              <input type="checkbox" id="helmetCheck" checked class="w-4 h-4 rounded border-slate-700 text-indigo-600 focus:ring-0 bg-slate-800" />
-              <span>Wearing ISI / DOT Certified Helmet</span>
-            </label>
-            <label class="flex items-center space-x-2.5 cursor-pointer text-slate-300 hover:text-white transition">
-              <input type="checkbox" id="speedCheck" checked class="w-4 h-4 rounded border-slate-700 text-indigo-600 focus:ring-0 bg-slate-800" />
-              <span>Campus Entry Speed Below 20 km/h</span>
-            </label>
+          <div id="gateTokenCard" class="mt-3 p-2.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center justify-between text-xs">
+            <div class="flex items-center space-x-2">
+              <i id="tokenIcon" data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+              <span id="tokenStatusText" class="font-bold text-emerald-300 text-[11px]">Dynamic Token: VERIFIED_SAFE_RIDE</span>
+            </div>
+            <span class="text-[9px] text-slate-400 font-mono">15s TOTP</span>
           </div>
 
-          <!-- Trigger Action -->
-          <button id="scanBtn" onclick="handleCheckIn()" class="mt-4 w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 active:scale-[0.98] transition-all rounded-xl font-extrabold text-sm text-white shadow-lg shadow-indigo-500/25 flex items-center justify-center space-x-2">
+          <button id="scanBtn" onclick="handleCheckIn()" class="mt-3.5 w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 active:scale-[0.98] transition-all rounded-xl font-extrabold text-sm text-white shadow-lg shadow-indigo-500/25 flex items-center justify-center space-x-2">
             <i data-lucide="scan-face" class="w-4 h-4"></i>
-            <span>Log Safe Commute (+20 PTS)</span>
+            <span id="btnLabel">Scan Gate Token (+20 PTS)</span>
           </button>
           
-          <p id="feedbackMsg" class="text-xs font-semibold mt-2.5 h-4 transition-opacity"></p>
+          <p id="feedbackMsg" class="text-xs font-semibold mt-2.5 min-h-[20px] transition-opacity"></p>
         </div>
 
       </section>
 
-      <!-- ================= SECTION 2: LIVE LEADERBOARD ================= -->
       <section id="leaderboard-section" class="hidden space-y-3">
         <div class="flex justify-between items-center mb-1">
           <div>
@@ -174,12 +180,11 @@
           <i data-lucide="sparkles" class="w-5 h-5 flex-shrink-0 text-amber-400 mt-0.5"></i>
           <div>
             <strong class="text-amber-200">Behavioral Psychology Insight:</strong>
-            <p class="text-[11px] text-slate-300 mt-0.5">Individual helmet skips drop the institution's regional rank. Peer accountability inverts the dynamic from punitive deterrence to campus pride.</p>
+            <p class="text-[11px] text-slate-300 mt-0.5">Individual non-compliant rides penalize the college's index score. Collective peer accountability replaces punitive police deterrence with campus pride.</p>
           </div>
         </div>
       </section>
 
-      <!-- ================= SECTION 3: REWARDS STORE ================= -->
       <section id="rewards-section" class="hidden space-y-3">
         <div class="flex justify-between items-center mb-1">
           <div>
@@ -239,7 +244,6 @@
         </div>
       </section>
 
-      <!-- ================= SECTION 4: DATA / JUDGES DECK ================= -->
       <section id="judges-section" class="hidden space-y-3">
         <div class="flex justify-between items-center mb-1">
           <div>
@@ -277,7 +281,6 @@
 
     </main>
 
-    <!-- Bottom Navigation Bar -->
     <nav class="absolute bottom-0 w-full glass-card border-t border-slate-800/80 py-2.5 px-4 flex justify-around items-center z-40 bg-slate-900/90">
       <button onclick="switchTab('checkin')" id="nav-checkin" class="flex flex-col items-center text-indigo-400 font-bold transition">
         <i data-lucide="scan" class="w-5 h-5"></i>
@@ -365,13 +368,13 @@
       }
     };
 
-    let currentPersonaKey = localStorage.getItem('gate_persona_v2') || 'kkwieer';
+    let currentPersonaKey = localStorage.getItem('gate_persona_v3') || 'kkwieer';
     let currentPersona = personas[currentPersonaKey] || personas.kkwieer;
 
     let state = {
-      points: parseInt(localStorage.getItem('gate_points_v2_' + currentPersonaKey)) || 0,
-      streak: parseInt(localStorage.getItem('gate_streak_v2_' + currentPersonaKey)) || 0,
-      colleges: JSON.parse(localStorage.getItem('gate_colleges_v2')) || JSON.parse(JSON.stringify(defaultColleges))
+      points: parseInt(localStorage.getItem('gate_points_v3_' + currentPersonaKey)) || 0,
+      streak: parseInt(localStorage.getItem('gate_streak_v3_' + currentPersonaKey)) || 0,
+      colleges: JSON.parse(localStorage.getItem('gate_colleges_v3')) || JSON.parse(JSON.stringify(defaultColleges))
     };
 
     let videoStream = null;
@@ -381,7 +384,34 @@
       document.getElementById('personaSelector').value = currentPersonaKey;
       applyPersonaUI();
       renderLeaderboard();
+      syncHardwareState();
       startCamera();
+    }
+
+    // Hardware State Synchronization (PASS vs VIOLATION TOKEN)
+    function syncHardwareState() {
+      const helmet = document.getElementById('helmetDetected').checked;
+      const speed = document.getElementById('speedCompliant').checked;
+      
+      const tokenCard = document.getElementById('gateTokenCard');
+      const tokenStatusText = document.getElementById('tokenStatusText');
+      const btnLabel = document.getElementById('btnLabel');
+      const scannerBox = document.getElementById('scannerBox');
+
+      if (helmet && speed) {
+        tokenCard.className = "mt-3 p-2.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center justify-between text-xs";
+        tokenStatusText.className = "font-bold text-emerald-300 text-[11px]";
+        tokenStatusText.innerText = "Dynamic Token: VERIFIED_SAFE_RIDE";
+        btnLabel.innerText = "Scan Gate Token (+20 PTS)";
+        scannerBox.className = "p-5 rounded-3xl glass-card border border-slate-700/60 text-center relative overflow-hidden glow-indigo transition-all";
+      } else {
+        tokenCard.className = "mt-3 p-2.5 bg-rose-500/15 border border-rose-500/40 rounded-xl flex items-center justify-between text-xs";
+        tokenStatusText.className = "font-bold text-rose-300 text-[11px]";
+        tokenStatusText.innerText = "Violation Token: NON_COMPLIANT_FLAG";
+        btnLabel.innerText = "Scan Gate Token (Violation)";
+        scannerBox.className = "p-5 rounded-3xl glass-card border border-rose-500/40 text-center relative overflow-hidden glow-rose transition-all";
+      }
+      lucide.createIcons();
     }
 
     async function startCamera() {
@@ -415,11 +445,11 @@
 
     function changePersona(key) {
       currentPersonaKey = key;
-      localStorage.setItem('gate_persona_v2', key);
+      localStorage.setItem('gate_persona_v3', key);
       currentPersona = personas[key];
       
-      state.points = parseInt(localStorage.getItem('gate_points_v2_' + key)) || 0;
-      state.streak = parseInt(localStorage.getItem('gate_streak_v2_' + key)) || 0;
+      state.points = parseInt(localStorage.getItem('gate_points_v3_' + key)) || 0;
+      state.streak = parseInt(localStorage.getItem('gate_streak_v3_' + key)) || 0;
       
       applyPersonaUI();
       renderLeaderboard();
@@ -436,15 +466,15 @@
     function updateUI() {
       document.getElementById('userPoints').innerText = `${state.points} PTS`;
       document.getElementById('streakCount').innerText = state.streak;
-      localStorage.setItem('gate_points_v2_' + currentPersonaKey, state.points);
-      localStorage.setItem('gate_streak_v2_' + currentPersonaKey, state.streak);
-      localStorage.setItem('gate_colleges_v2', JSON.stringify(state.colleges));
+      localStorage.setItem('gate_points_v3_' + currentPersonaKey, state.points);
+      localStorage.setItem('gate_streak_v3_' + currentPersonaKey, state.streak);
+      localStorage.setItem('gate_colleges_v3', JSON.stringify(state.colleges));
     }
 
     function resetScore() {
-      localStorage.removeItem('gate_points_v2_' + currentPersonaKey);
-      localStorage.removeItem('gate_streak_v2_' + currentPersonaKey);
-      localStorage.removeItem('gate_colleges_v2');
+      localStorage.removeItem('gate_points_v3_' + currentPersonaKey);
+      localStorage.removeItem('gate_streak_v3_' + currentPersonaKey);
+      localStorage.removeItem('gate_colleges_v3');
       
       state.points = 0;
       state.streak = 0;
@@ -477,40 +507,55 @@
     }
 
     function handleCheckIn() {
-      const helmet = document.getElementById('helmetCheck').checked;
-      const speed = document.getElementById('speedCheck').checked;
+      const helmet = document.getElementById('helmetDetected').checked;
+      const speed = document.getElementById('speedCompliant').checked;
       const msg = document.getElementById('feedbackMsg');
+      const targetCollege = currentPersona.college 
+        ? state.colleges.find(c => c.name === currentPersona.college) 
+        : null;
 
+      // ================= SCENARIO 1: VIOLATION TOKEN =================
       if (!helmet || !speed) {
-        msg.className = "text-xs font-bold mt-2.5 text-rose-400";
-        msg.innerText = "⚠️ Non-compliant: Both Helmet & Speed criteria required.";
-        return;
-      }
+        state.streak = 0;
+        state.points = Math.max(0, state.points - 10);
 
-      state.points += 20;
-      state.streak += 1;
-      
-      if (currentPersona.college) {
-        const targetCollege = state.colleges.find(c => c.name === currentPersona.college);
+        if (targetCollege) {
+          targetCollege.score = Math.max(0, targetCollege.score - 15);
+          targetCollege.compliance = Math.max(0, targetCollege.compliance - 5);
+        }
+
+        updateUI();
+        renderLeaderboard();
+
+        msg.className = "text-xs font-bold mt-2.5 text-rose-400";
+        msg.innerText = "⚠️ Violation Logged: Streak reset to 0. College score penalized (-15 Index).";
+        
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      } 
+      // ================= SCENARIO 2: VERIFIED SAFE TOKEN =================
+      else {
+        state.points += 20;
+        state.streak += 1;
+        
         if (targetCollege) {
           targetCollege.score += 20;
           targetCollege.compliance = Math.min(100, targetCollege.compliance + 5);
         }
+
+        updateUI();
+        renderLeaderboard();
+
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.7 }
+        });
+
+        msg.className = "text-xs font-bold mt-2.5 text-emerald-400";
+        msg.innerText = currentPersona.college 
+          ? `🎉 +20 PTS! ${currentPersona.college} score boosted.`
+          : "🎉 +20 PTS! Commute verification logged successfully.";
       }
-
-      updateUI();
-      renderLeaderboard();
-
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.7 }
-      });
-
-      msg.className = "text-xs font-bold mt-2.5 text-emerald-400";
-      msg.innerText = currentPersona.college 
-        ? `🎉 +20 PTS! ${currentPersona.college} score boosted.`
-        : "🎉 +20 PTS! Commute verification logged successfully.";
 
       const btn = document.getElementById('scanBtn');
       btn.disabled = true;
