@@ -79,23 +79,24 @@
               <!-- Persona Dropdown -->
               <select id="personaSelector" onchange="changePersona(this.value)" class="mt-1 bg-slate-800/90 border border-slate-700 text-white text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-500 w-full max-w-[240px]">
                 <option value="aditya">Aditya Chate (KKWIEER)</option>
+                <option value="met">Student Commuter (MET BKC)</option>
                 <option value="kbt">Student Commuter (KBTCOE)</option>
                 <option value="ggs">Student Commuter (GGSCOERC)</option>
                 <option value="sandip">Student Commuter (Sandip Univ)</option>
-                <option value="judge">Guest Evaluator (MET BKC)</option>
+                <option value="judge">Guest Evaluator</option>
               </select>
 
               <p id="userSubtext" class="text-[11px] text-indigo-300 mt-1 font-medium">KKWIEER • Electrical Engineering</p>
             </div>
 
             <div class="text-right pl-2">
-              <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">Verified</span>
+              <span id="tierBadge" class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">Verified</span>
               <p class="text-xs text-slate-300 mt-2 font-mono font-semibold">🔥 <span id="streakCount">4</span>-Day Streak</p>
             </div>
           </div>
         </div>
 
-        <!-- Gate Scanner with Live Camera Stream -->
+        <!-- High-Tech Gate Scanner with Live Camera Stream -->
         <div class="p-5 rounded-3xl glass-card border border-slate-700/60 text-center relative overflow-hidden glow-indigo">
           <div class="flex justify-between items-center mb-3">
             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Entry Viewfinder</span>
@@ -300,14 +301,25 @@
         college: "KKWIEER Nashik",
         subtext: "KKWIEER • Electrical Engineering",
         gate: "GATE #01 • PANCHAVATI",
+        badge: "Verified",
         points: 120,
         streak: 4
+      },
+      met: {
+        name: "Student Commuter",
+        college: "MET BKC Nashik",
+        subtext: "MET BKC • Adgaon Campus",
+        gate: "GATE #01 • ADGAON CAMPUS",
+        badge: "Verified",
+        points: 85,
+        streak: 3
       },
       kbt: {
         name: "Student Commuter",
         college: "NDMVP KBTCOE",
         subtext: "KBTCOE • Gangapur Road Hub",
         gate: "MAIN GATE • GANGAPUR RD",
+        badge: "Verified",
         points: 95,
         streak: 3
       },
@@ -316,6 +328,7 @@
         college: "GGSCOERC Nashik",
         subtext: "Guru Gobind Singh COE • Khalsa Hub",
         gate: "GATE #02 • INDIRA NAGAR",
+        badge: "Verified",
         points: 80,
         streak: 2
       },
@@ -324,16 +337,18 @@
         college: "Sandip University",
         subtext: "Sandip Univ • Mahiravani Hub",
         gate: "MAIN ACCESS BAY",
+        badge: "Verified",
         points: 90,
         streak: 3
       },
       judge: {
         name: "Guest Evaluator",
-        college: "MET BKC Nashik",
-        subtext: "Future 6.0 Evaluation Session",
-        gate: "CENTRAL CAMPUS GATE",
-        points: 60,
-        streak: 2
+        college: null,
+        subtext: "Future 6.0 Interactive Evaluation Mode",
+        gate: "EVALUATION CHECKPOINT",
+        badge: "Guest Mode",
+        points: 50,
+        streak: 1
       }
     };
 
@@ -375,6 +390,11 @@
         video.srcObject = stream;
         video.classList.remove('hidden');
         prompt.classList.add('hidden');
+        tag.classList.remove('hidden');
+      } catch (err) {
+        console.warn("Camera stream inactive or denied:", err);
+        video.classList.add('hidden');
+        prompt.classList.remove('hidden');
         tag.classList.add('hidden');
       }
     }
@@ -401,6 +421,7 @@
     function applyPersonaUI() {
       document.getElementById('userSubtext').innerText = currentPersona.subtext;
       document.getElementById('gateLabel').innerText = currentPersona.gate;
+      document.getElementById('tierBadge').innerText = currentPersona.badge;
       document.getElementById('userPoints').innerText = `${state.points} PTS`;
       document.getElementById('streakCount').innerText = state.streak;
     }
@@ -443,10 +464,12 @@
       state.points += 30;
       state.streak += 1;
       
-      const targetCollege = state.colleges.find(c => c.name === currentPersona.college);
-      if (targetCollege) {
-        targetCollege.score += 20;
-        targetCollege.compliance = Math.min(99, targetCollege.compliance + 1);
+      if (currentPersona.college) {
+        const targetCollege = state.colleges.find(c => c.name === currentPersona.college);
+        if (targetCollege) {
+          targetCollege.score += 20;
+          targetCollege.compliance = Math.min(99, targetCollege.compliance + 1);
+        }
       }
 
       updateUI();
@@ -459,7 +482,9 @@
       });
 
       msg.className = "text-xs font-bold mt-2.5 text-emerald-400";
-      msg.innerText = `🎉 +30 PTS! ${currentPersona.college} score boosted.`;
+      msg.innerText = currentPersona.college 
+        ? `🎉 +30 PTS! ${currentPersona.college} score boosted.`
+        : "🎉 +30 PTS! Commute verification logged successfully.";
 
       const btn = document.getElementById('scanBtn');
       btn.disabled = true;
