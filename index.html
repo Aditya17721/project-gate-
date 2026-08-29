@@ -58,7 +58,7 @@
       <div class="flex items-center gap-2">
         <div class="flex items-center gap-1.5 bg-slate-800/90 border border-amber-500/30 px-3 py-1.5 rounded-full glow-amber">
           <i data-lucide="zap" class="w-4 h-4 text-amber-400 fill-amber-400"></i>
-          <span id="userPoints" class="text-xs font-black text-amber-300 tracking-wide font-mono">120 PTS</span>
+          <span id="userPoints" class="text-xs font-black text-amber-300 tracking-wide font-mono">0 PTS</span>
         </div>
         <button onclick="resetScore()" title="Reset Points" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-full border border-slate-700 transition active:scale-95">
           <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
@@ -96,7 +96,7 @@
 
             <div class="text-right pl-2">
               <span id="tierBadge" class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">Verified</span>
-              <p class="text-xs text-slate-300 mt-2 font-mono font-semibold">🔥 <span id="streakCount">4</span>-Day Streak</p>
+              <p class="text-xs text-slate-300 mt-2 font-mono font-semibold">🔥 <span id="streakCount">0</span>-Day Streak</p>
             </div>
           </div>
         </div>
@@ -301,11 +301,11 @@
 
   <script>
     const defaultColleges = [
-      { name: "KKWIEER Nashik", score: 842, compliance: 78 },
-      { name: "Sandip University", score: 790, compliance: 71 },
-      { name: "MET BKC Nashik", score: 715, compliance: 64 },
-      { name: "NDMVP KBTCOE", score: 685, compliance: 60 },
-      { name: "GGSCOERC Nashik", score: 640, compliance: 56 }
+      { name: "KKWIEER Nashik", score: 0, compliance: 0 },
+      { name: "Sandip University", score: 0, compliance: 0 },
+      { name: "MET BKC Nashik", score: 0, compliance: 0 },
+      { name: "NDMVP KBTCOE", score: 0, compliance: 0 },
+      { name: "GGSCOERC Nashik", score: 0, compliance: 0 }
     ];
 
     const personas = {
@@ -315,8 +315,8 @@
         subtext: "KKWIEER • Panchavati Campus",
         gate: "GATE #01 • PANCHAVATI",
         badge: "Verified",
-        points: 120,
-        streak: 4
+        points: 0,
+        streak: 0
       },
       met: {
         name: "Student Commuter",
@@ -324,8 +324,8 @@
         subtext: "MET BKC • Adgaon Campus",
         gate: "GATE #01 • ADGAON CAMPUS",
         badge: "Verified",
-        points: 85,
-        streak: 3
+        points: 0,
+        streak: 0
       },
       kbt: {
         name: "Student Commuter",
@@ -333,8 +333,8 @@
         subtext: "KBTCOE • Gangapur Road Hub",
         gate: "MAIN GATE • GANGAPUR RD",
         badge: "Verified",
-        points: 95,
-        streak: 3
+        points: 0,
+        streak: 0
       },
       ggs: {
         name: "Student Commuter",
@@ -342,8 +342,8 @@
         subtext: "Guru Gobind Singh COE • Khalsa Hub",
         gate: "GATE #02 • INDIRA NAGAR",
         badge: "Verified",
-        points: 80,
-        streak: 2
+        points: 0,
+        streak: 0
       },
       sandip: {
         name: "Student Commuter",
@@ -351,8 +351,8 @@
         subtext: "Sandip Univ • Mahiravani Hub",
         gate: "MAIN ACCESS BAY",
         badge: "Verified",
-        points: 90,
-        streak: 3
+        points: 0,
+        streak: 0
       },
       judge: {
         name: "Guest Evaluator",
@@ -360,18 +360,18 @@
         subtext: "Future 6.0 Interactive Evaluation Mode",
         gate: "EVALUATION CHECKPOINT",
         badge: "Guest Mode",
-        points: 50,
-        streak: 1
+        points: 0,
+        streak: 0
       }
     };
 
-    let currentPersonaKey = localStorage.getItem('gate_persona') || 'kkwieer';
+    let currentPersonaKey = localStorage.getItem('gate_persona_v2') || 'kkwieer';
     let currentPersona = personas[currentPersonaKey] || personas.kkwieer;
 
     let state = {
-      points: parseInt(localStorage.getItem('gate_points_' + currentPersonaKey)) || currentPersona.points,
-      streak: parseInt(localStorage.getItem('gate_streak_' + currentPersonaKey)) || currentPersona.streak,
-      colleges: JSON.parse(localStorage.getItem('gate_colleges')) || JSON.parse(JSON.stringify(defaultColleges))
+      points: parseInt(localStorage.getItem('gate_points_v2_' + currentPersonaKey)) || 0,
+      streak: parseInt(localStorage.getItem('gate_streak_v2_' + currentPersonaKey)) || 0,
+      colleges: JSON.parse(localStorage.getItem('gate_colleges_v2')) || JSON.parse(JSON.stringify(defaultColleges))
     };
 
     let videoStream = null;
@@ -415,11 +415,11 @@
 
     function changePersona(key) {
       currentPersonaKey = key;
-      localStorage.setItem('gate_persona', key);
+      localStorage.setItem('gate_persona_v2', key);
       currentPersona = personas[key];
       
-      state.points = parseInt(localStorage.getItem('gate_points_' + key)) || currentPersona.points;
-      state.streak = parseInt(localStorage.getItem('gate_streak_' + key)) || currentPersona.streak;
+      state.points = parseInt(localStorage.getItem('gate_points_v2_' + key)) || 0;
+      state.streak = parseInt(localStorage.getItem('gate_streak_v2_' + key)) || 0;
       
       applyPersonaUI();
       renderLeaderboard();
@@ -436,18 +436,18 @@
     function updateUI() {
       document.getElementById('userPoints').innerText = `${state.points} PTS`;
       document.getElementById('streakCount').innerText = state.streak;
-      localStorage.setItem('gate_points_' + currentPersonaKey, state.points);
-      localStorage.setItem('gate_streak_' + currentPersonaKey, state.streak);
-      localStorage.setItem('gate_colleges', JSON.stringify(state.colleges));
+      localStorage.setItem('gate_points_v2_' + currentPersonaKey, state.points);
+      localStorage.setItem('gate_streak_v2_' + currentPersonaKey, state.streak);
+      localStorage.setItem('gate_colleges_v2', JSON.stringify(state.colleges));
     }
 
     function resetScore() {
-      localStorage.removeItem('gate_points_' + currentPersonaKey);
-      localStorage.removeItem('gate_streak_' + currentPersonaKey);
-      localStorage.removeItem('gate_colleges');
+      localStorage.removeItem('gate_points_v2_' + currentPersonaKey);
+      localStorage.removeItem('gate_streak_v2_' + currentPersonaKey);
+      localStorage.removeItem('gate_colleges_v2');
       
-      state.points = currentPersona.points;
-      state.streak = currentPersona.streak;
+      state.points = 0;
+      state.streak = 0;
       state.colleges = JSON.parse(JSON.stringify(defaultColleges));
       
       updateUI();
@@ -455,7 +455,7 @@
       
       const msg = document.getElementById('feedbackMsg');
       msg.className = "text-xs font-bold mt-2.5 text-slate-400";
-      msg.innerText = "🔄 Points and ranking reset to baseline.";
+      msg.innerText = "🔄 Points and ranking reset to 0.";
       setTimeout(() => { msg.innerText = ""; }, 2500);
     }
 
@@ -494,7 +494,7 @@
         const targetCollege = state.colleges.find(c => c.name === currentPersona.college);
         if (targetCollege) {
           targetCollege.score += 20;
-          targetCollege.compliance = Math.min(99, targetCollege.compliance + 1);
+          targetCollege.compliance = Math.min(100, targetCollege.compliance + 5);
         }
       }
 
@@ -531,7 +531,7 @@
         return `
           <div class="p-3.5 rounded-2xl border transition-all ${isSelected ? 'bg-indigo-950/60 border-indigo-500/50 glow-indigo' : 'bg-slate-800/40 border-slate-700/60'} flex items-center justify-between">
             <div class="flex items-center space-x-3">
-              <span class="w-6 text-center font-mono font-black ${i === 0 ? 'text-amber-400' : 'text-slate-400'} text-xs">#${i + 1}</span>
+              <span class="w-6 text-center font-mono font-black ${i === 0 && c.score > 0 ? 'text-amber-400' : 'text-slate-400'} text-xs">#${i + 1}</span>
               <div>
                 <h4 class="text-xs font-bold ${isSelected ? 'text-indigo-300' : 'text-white'} flex items-center gap-1.5">
                   ${c.name} ${isSelected ? '<span class="text-[9px] bg-indigo-500/30 text-indigo-300 px-1.5 py-0.2 rounded font-mono font-bold">Active</span>' : ''}
