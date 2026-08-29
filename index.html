@@ -76,10 +76,13 @@
                 <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Active Commuter</span>
               </div>
               
-              <select id="personaSelector" onchange="changePersona(this.value)" class="mt-1 bg-slate-800/90 border border-slate-700 text-white text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-500 w-full max-w-[220px]">
+              <!-- Persona Dropdown -->
+              <select id="personaSelector" onchange="changePersona(this.value)" class="mt-1 bg-slate-800/90 border border-slate-700 text-white text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-500 w-full max-w-[240px]">
                 <option value="aditya">Aditya Chate (KKWIEER)</option>
-                <option value="judge">Judge / Evaluator (Guest)</option>
+                <option value="kbt">Student Commuter (KBTCOE)</option>
+                <option value="ggs">Student Commuter (GGSCOERC)</option>
                 <option value="sandip">Student Commuter (Sandip Univ)</option>
+                <option value="judge">Guest Evaluator (MET BKC)</option>
               </select>
 
               <p id="userSubtext" class="text-[11px] text-indigo-300 mt-1 font-medium">KKWIEER • Electrical Engineering</p>
@@ -92,7 +95,7 @@
           </div>
         </div>
 
-        <!-- High-Tech Gate Scanner with Live Camera Stream -->
+        <!-- Gate Scanner with Live Camera Stream -->
         <div class="p-5 rounded-3xl glass-card border border-slate-700/60 text-center relative overflow-hidden glow-indigo">
           <div class="flex justify-between items-center mb-3">
             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Entry Viewfinder</span>
@@ -102,10 +105,8 @@
           <!-- Real Camera Viewfinder Container -->
           <div class="relative w-full h-52 bg-slate-950 rounded-2xl border-2 border-indigo-500/40 flex items-center justify-center overflow-hidden group shadow-inner">
             
-            <!-- Video Feed Element -->
             <video id="cameraFeed" autoplay playsinline muted class="w-full h-full object-cover hidden"></video>
 
-            <!-- Camera Placeholder / Start Button UI -->
             <div id="cameraPrompt" class="flex flex-col items-center justify-center space-y-2 z-10 px-4 text-center">
               <button onclick="startCamera()" class="p-3 bg-indigo-600/80 hover:bg-indigo-500 text-white rounded-full shadow-lg transition active:scale-95 flex items-center justify-center">
                 <i data-lucide="camera" class="w-6 h-6"></i>
@@ -114,16 +115,13 @@
               <span class="text-[9px] text-slate-500">Allows instant AR verification at entry</span>
             </div>
 
-            <!-- Scanning Laser Line Overlay -->
             <div class="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent laser-line shadow-[0_0_12px_#22d3ee] pointer-events-none z-20"></div>
             
-            <!-- Corner Brackets Overlay -->
             <div class="absolute top-2.5 left-2.5 w-5 h-5 border-t-2 border-l-2 border-cyan-400 pointer-events-none z-20"></div>
             <div class="absolute top-2.5 right-2.5 w-5 h-5 border-t-2 border-r-2 border-cyan-400 pointer-events-none z-20"></div>
             <div class="absolute bottom-2.5 left-2.5 w-5 h-5 border-b-2 border-l-2 border-cyan-400 pointer-events-none z-20"></div>
             <div class="absolute bottom-2.5 right-2.5 w-5 h-5 border-b-2 border-r-2 border-cyan-400 pointer-events-none z-20"></div>
 
-            <!-- Live Camera Status Tag -->
             <div id="camStatusTag" class="hidden absolute top-2 bg-slate-900/80 backdrop-blur border border-emerald-500/40 px-2 py-0.5 rounded-full text-[9px] text-emerald-400 font-mono z-20 flex items-center gap-1">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> LIVE OPTICAL FEED
             </div>
@@ -305,6 +303,30 @@
         points: 120,
         streak: 4
       },
+      kbt: {
+        name: "Student Commuter",
+        college: "NDMVP KBTCOE",
+        subtext: "KBTCOE • Gangapur Road Hub",
+        gate: "MAIN GATE • GANGAPUR RD",
+        points: 95,
+        streak: 3
+      },
+      ggs: {
+        name: "Student Commuter",
+        college: "GGSCOERC Nashik",
+        subtext: "Guru Gobind Singh COE • Khalsa Hub",
+        gate: "GATE #02 • INDIRA NAGAR",
+        points: 80,
+        streak: 2
+      },
+      sandip: {
+        name: "Student Commuter",
+        college: "Sandip University",
+        subtext: "Sandip Univ • Mahiravani Hub",
+        gate: "MAIN ACCESS BAY",
+        points: 90,
+        streak: 3
+      },
       judge: {
         name: "Guest Evaluator",
         college: "MET BKC Nashik",
@@ -312,14 +334,6 @@
         gate: "CENTRAL CAMPUS GATE",
         points: 60,
         streak: 2
-      },
-      sandip: {
-        name: "Student Commuter",
-        college: "Sandip University",
-        subtext: "Sandip Univ • Campus Commuter",
-        gate: "MAIN ACCESS BAY",
-        points: 90,
-        streak: 3
       }
     };
 
@@ -333,7 +347,8 @@
         { name: "KKWIEER Nashik", score: 842, compliance: 78 },
         { name: "Sandip University", score: 790, compliance: 71 },
         { name: "MET BKC Nashik", score: 715, compliance: 64 },
-        { name: "KBTCOE Nashik", score: 680, compliance: 59 }
+        { name: "NDMVP KBTCOE", score: 685, compliance: 60 },
+        { name: "GGSCOERC Nashik", score: 640, compliance: 56 }
       ]
     };
 
@@ -344,11 +359,9 @@
       document.getElementById('personaSelector').value = currentPersonaKey;
       applyPersonaUI();
       renderLeaderboard();
-      // Attempt to auto start camera
       startCamera();
     }
 
-    // Camera Access Handler
     async function startCamera() {
       const video = document.getElementById('cameraFeed');
       const prompt = document.getElementById('cameraPrompt');
@@ -362,12 +375,6 @@
         video.srcObject = stream;
         video.classList.remove('hidden');
         prompt.classList.add('hidden');
-        tag.classList.remove('hidden');
-      } catch (err) {
-        console.warn("Camera stream inactive or denied:", err);
-        // Fallback gracefully to scanner placeholder
-        video.classList.add('hidden');
-        prompt.classList.remove('hidden');
         tag.classList.add('hidden');
       }
     }
