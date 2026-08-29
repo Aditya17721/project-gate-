@@ -282,8 +282,7 @@
 
   <script>
     // ================= REAL-TIME CLOUD DATABASE CONFIG =================
-    // Replace with your Firebase RTDB URL (make sure it ends with a trailing /)
-    const FIREBASE_DB_URL = "YOUR_FIREBASE_URL_HERE/";
+    const FIREBASE_DB_URL = "https://gate-f6bad-default-rtdb.firebaseio.com/";
 
     const defaultColleges = [
       { name: "KKWIEER Nashik", score: 0, compliance: 0 },
@@ -326,7 +325,6 @@
     }
 
     async function fetchCloudScores() {
-      if (FIREBASE_DB_URL.includes("YOUR_FIREBASE_URL_HERE")) return;
       try {
         const res = await fetch(`${FIREBASE_DB_URL}colleges.json`);
         if (res.ok) {
@@ -340,7 +338,6 @@
     }
 
     async function pushCloudScores() {
-      if (FIREBASE_DB_URL.includes("YOUR_FIREBASE_URL_HERE")) return;
       try {
         await fetch(`${FIREBASE_DB_URL}colleges.json`, {
           method: 'PUT',
