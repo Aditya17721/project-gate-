@@ -284,7 +284,6 @@
     // ================= REAL-TIME CLOUD DATABASE CONFIG =================
     const FIREBASE_DB_URL = "https://gate-f6bad-default-rtdb.firebaseio.com/";
 
-
     const defaultColleges = [
       { name: "KKWIEER Nashik", score: 0, compliance: 0 },
       { name: "Sandip University", score: 0, compliance: 0 },
@@ -294,20 +293,21 @@
     ];
 
     const personas = {
-      kkwieer: { name: "Student Commuter", college: "KKWIEER Nashik", subtext: "KKWIEER • Panchavati Campus", gate: "GATE #01 • PANCHAVATI", badge: "Verified", points: 0, streak: 0 },
-      met: { name: "Student Commuter", college: "MET BKC Nashik", subtext: "MET BKC • Adgaon Campus", gate: "GATE #01 • ADGAON CAMPUS", badge: "Verified", points: 0, streak: 0 },
-      kbt: { name: "Student Commuter", college: "NDMVP KBTCOE", subtext: "KBTCOE • Gangapur Road Hub", gate: "MAIN GATE • GANGAPUR RD", badge: "Verified", points: 0, streak: 0 },
-      ggs: { name: "Student Commuter", college: "GGSCOERC Nashik", subtext: "Guru Gobind Singh COE • Khalsa Hub", gate: "GATE #02 • INDIRA NAGAR", badge: "Verified", points: 0, streak: 0 },
-      sandip: { name: "Student Commuter", college: "Sandip University", subtext: "Sandip Univ • Mahiravani Hub", gate: "MAIN ACCESS BAY", badge: "Verified", points: 0, streak: 0 },
-      judge: { name: "Guest Evaluator", college: null, subtext: "Future 6.0 Interactive Evaluation Mode", gate: "EVALUATION CHECKPOINT", badge: "Guest Mode", points: 0, streak: 0 }
+      kkwieer: { name: "Student Commuter", college: "KKWIEER Nashik", subtext: "KKWIEER • Panchavati Campus", gate: "GATE #01 • PANCHAVATI", badge: "Verified" },
+      met: { name: "Student Commuter", college: "MET BKC Nashik", subtext: "MET BKC • Adgaon Campus", gate: "GATE #01 • ADGAON CAMPUS", badge: "Verified" },
+      kbt: { name: "Student Commuter", college: "NDMVP KBTCOE", subtext: "KBTCOE • Gangapur Road Hub", gate: "MAIN GATE • GANGAPUR RD", badge: "Verified" },
+      ggs: { name: "Student Commuter", college: "GGSCOERC Nashik", subtext: "Guru Gobind Singh COE • Khalsa Hub", gate: "GATE #02 • INDIRA NAGAR", badge: "Verified" },
+      sandip: { name: "Student Commuter", college: "Sandip University", subtext: "Sandip Univ • Mahiravani Hub", gate: "MAIN ACCESS BAY", badge: "Verified" },
+      judge: { name: "Guest Evaluator", college: null, subtext: "Future 6.0 Interactive Evaluation Mode", gate: "EVALUATION CHECKPOINT", badge: "Guest Mode" }
     };
 
-    let currentPersonaKey = localStorage.getItem('gate_persona_v6') || 'kkwieer';
+    let currentPersonaKey = localStorage.getItem('gate_persona_v7') || 'kkwieer';
     let currentPersona = personas[currentPersonaKey] || personas.kkwieer;
 
+    // Master cloud-synchronized state
     let state = {
-      points: parseInt(localStorage.getItem('gate_points_v6_' + currentPersonaKey)) || 0,
-      streak: parseInt(localStorage.getItem('gate_streak_v6_' + currentPersonaKey)) || 0,
+      globalPoints: 0,
+      globalStreak: 0,
       colleges: JSON.parse(JSON.stringify(defaultColleges))
     };
 
@@ -320,30 +320,37 @@
       syncHardwareState();
       startCamera();
       
-      // Real-Time Cloud Polling & Sync (Every 1.5 seconds)
-      fetchCloudScores();
-      setInterval(fetchCloudScores, 1500);
+      // Real-Time Cloud Polling & Sync (Every 1.2 seconds)
+      fetchCloudState();
+      setInterval(fetchCloudState, 1200);
     }
 
-    async function fetchCloudScores() {
+    // Fetch master points, streaks, and college scores from Firebase
+    async function fetchCloudState() {
       try {
-        const res = await fetch(`${FIREBASE_DB_URL}colleges.json`);
+        const res = await fetch(`${FIREBASE_DB_URL}gate_state.json`);
         if (res.ok) {
           const data = await res.json();
-          if (data && Array.isArray(data)) {
-            state.colleges = data;
+          if (data) {
+            state.globalPoints = typeof data.globalPoints === 'number' ? data.globalPoints : 0;
+            state.globalStreak = typeof data.globalStreak === 'number' ? data.globalStreak : 0;
+            if (data.colleges && Array.isArray(data.colleges)) {
+              state.colleges = data.colleges;
+            }
+            updateUI();
             renderLeaderboard();
           }
         }
       } catch (e) {}
     }
 
-    async function pushCloudScores() {
+    // Push master points, streaks, and college scores to Firebase
+    async function pushCloudState() {
       try {
-        await fetch(`${FIREBASE_DB_URL}colleges.json`, {
+        await fetch(`${FIREBASE_DB_URL}gate_state.json`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(state.colleges)
+          body: JSON.stringify(state)
         });
       } catch (e) {}
     }
@@ -402,12 +409,8 @@
 
     function changePersona(key) {
       currentPersonaKey = key;
-      localStorage.setItem('gate_persona_v6', key);
+      localStorage.setItem('gate_persona_v7', key);
       currentPersona = personas[key];
-      
-      state.points = parseInt(localStorage.getItem('gate_points_v6_' + key)) || 0;
-      state.streak = parseInt(localStorage.getItem('gate_streak_v6_' + key)) || 0;
-      
       applyPersonaUI();
       renderLeaderboard();
     }
@@ -416,29 +419,26 @@
       document.getElementById('userSubtext').innerText = currentPersona.subtext;
       document.getElementById('gateLabel').innerText = currentPersona.gate;
       document.getElementById('tierBadge').innerText = currentPersona.badge;
-      document.getElementById('userPoints').innerText = `${state.points} PTS`;
-      document.getElementById('streakCount').innerText = state.streak;
+      updateUI();
     }
 
     function updateUI() {
-      document.getElementById('userPoints').innerText = `${state.points} PTS`;
-      document.getElementById('streakCount').innerText = state.streak;
-      localStorage.setItem('gate_points_v6_' + currentPersonaKey, state.points);
-      localStorage.setItem('gate_streak_v6_' + currentPersonaKey, state.streak);
+      document.getElementById('userPoints').innerText = `${state.globalPoints} PTS`;
+      document.getElementById('streakCount').innerText = state.globalStreak;
     }
 
     async function resetGlobalScores() {
-      state.points = 0;
-      state.streak = 0;
+      state.globalPoints = 0;
+      state.globalStreak = 0;
       state.colleges = JSON.parse(JSON.stringify(defaultColleges));
       
       updateUI();
       renderLeaderboard();
-      await pushCloudScores();
+      await pushCloudState();
       
       const msg = document.getElementById('feedbackMsg');
       msg.className = "text-xs font-bold mt-2.5 text-slate-400";
-      msg.innerText = "🔄 Global Cloud Scores Reset across all devices.";
+      msg.innerText = "🔄 Reset: All devices reset to 0 PTS.";
       setTimeout(() => { msg.innerText = ""; }, 2500);
     }
 
@@ -469,8 +469,8 @@
 
       // NON-COMPLIANT (10 POINTS DEDUCTED)
       if (!helmet || !speed) {
-        state.streak = 0;
-        state.points = Math.max(0, state.points - 10);
+        state.globalStreak = 0;
+        state.globalPoints = Math.max(0, state.globalPoints - 10);
 
         if (targetCollege) {
           targetCollege.score = Math.max(0, targetCollege.score - 10);
@@ -479,15 +479,15 @@
 
         updateUI();
         renderLeaderboard();
-        await pushCloudScores();
+        await pushCloudState();
 
         msg.className = "text-xs font-bold mt-2.5 text-rose-400";
         msg.innerText = "⚠️ Violation Logged: Streak reset to 0. -10 PTS deducted.";
       } 
       // VERIFIED SAFE
       else {
-        state.points += 20;
-        state.streak += 1;
+        state.globalPoints += 20;
+        state.globalStreak += 1;
         
         if (targetCollege) {
           targetCollege.score += 20;
@@ -496,7 +496,7 @@
 
         updateUI();
         renderLeaderboard();
-        await pushCloudScores();
+        await pushCloudState();
 
         confetti({
           particleCount: 50,
@@ -506,8 +506,8 @@
 
         msg.className = "text-xs font-bold mt-2.5 text-emerald-400";
         msg.innerText = currentPersona.college 
-          ? `🎉 +20 PTS! ${currentPersona.college} score synced to cloud.`
-          : "🎉 +20 PTS! Commute verification logged successfully.";
+          ? `🎉 +20 PTS! ${currentPersona.college} synced across all screens.`
+          : "🎉 +20 PTS! Commute verified across all screens.";
       }
 
       const btn = document.getElementById('scanBtn');
@@ -546,14 +546,15 @@
       }).join('');
     }
 
-    function claimReward(cost, title) {
-      if (state.points >= cost) {
-        state.points -= cost;
+    async function claimReward(cost, title) {
+      if (state.globalPoints >= cost) {
+        state.globalPoints -= cost;
         updateUI();
+        await pushCloudState();
         confetti({ particleCount: 35, spread: 50 });
         alert(`🎉 Success! Claimed "${title}". Voucher active.`);
       } else {
-        alert(`❌ Insufficient points. You need ${cost - state.points} more points.`);
+        alert(`❌ Insufficient points. You need ${cost - state.globalPoints} more points.`);
       }
     }
 
