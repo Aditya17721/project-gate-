@@ -282,7 +282,7 @@
 
   <script>
     // ================= REAL-TIME CLOUD DATABASE CONFIG =================
-    // Paste your Firebase Database URL below (make sure it ends with a slash /)
+    // Replace with your Firebase RTDB URL (make sure it ends with a trailing /)
     const FIREBASE_DB_URL = "YOUR_FIREBASE_URL_HERE/";
 
     const defaultColleges = [
@@ -302,12 +302,12 @@
       judge: { name: "Guest Evaluator", college: null, subtext: "Future 6.0 Interactive Evaluation Mode", gate: "EVALUATION CHECKPOINT", badge: "Guest Mode", points: 0, streak: 0 }
     };
 
-    let currentPersonaKey = localStorage.getItem('gate_persona_v5') || 'kkwieer';
+    let currentPersonaKey = localStorage.getItem('gate_persona_v6') || 'kkwieer';
     let currentPersona = personas[currentPersonaKey] || personas.kkwieer;
 
     let state = {
-      points: parseInt(localStorage.getItem('gate_points_v5_' + currentPersonaKey)) || 0,
-      streak: parseInt(localStorage.getItem('gate_streak_v5_' + currentPersonaKey)) || 0,
+      points: parseInt(localStorage.getItem('gate_points_v6_' + currentPersonaKey)) || 0,
+      streak: parseInt(localStorage.getItem('gate_streak_v6_' + currentPersonaKey)) || 0,
       colleges: JSON.parse(JSON.stringify(defaultColleges))
     };
 
@@ -404,11 +404,11 @@
 
     function changePersona(key) {
       currentPersonaKey = key;
-      localStorage.setItem('gate_persona_v5', key);
+      localStorage.setItem('gate_persona_v6', key);
       currentPersona = personas[key];
       
-      state.points = parseInt(localStorage.getItem('gate_points_v5_' + key)) || 0;
-      state.streak = parseInt(localStorage.getItem('gate_streak_v5_' + key)) || 0;
+      state.points = parseInt(localStorage.getItem('gate_points_v6_' + key)) || 0;
+      state.streak = parseInt(localStorage.getItem('gate_streak_v6_' + key)) || 0;
       
       applyPersonaUI();
       renderLeaderboard();
@@ -425,8 +425,8 @@
     function updateUI() {
       document.getElementById('userPoints').innerText = `${state.points} PTS`;
       document.getElementById('streakCount').innerText = state.streak;
-      localStorage.setItem('gate_points_v5_' + currentPersonaKey, state.points);
-      localStorage.setItem('gate_streak_v5_' + currentPersonaKey, state.streak);
+      localStorage.setItem('gate_points_v6_' + currentPersonaKey, state.points);
+      localStorage.setItem('gate_streak_v6_' + currentPersonaKey, state.streak);
     }
 
     async function resetGlobalScores() {
@@ -469,13 +469,13 @@
         ? state.colleges.find(c => c.name === currentPersona.college) 
         : null;
 
-      // NON-COMPLIANT
+      // NON-COMPLIANT (10 POINTS DEDUCTED)
       if (!helmet || !speed) {
         state.streak = 0;
         state.points = Math.max(0, state.points - 10);
 
         if (targetCollege) {
-          targetCollege.score = Math.max(0, targetCollege.score - 15);
+          targetCollege.score = Math.max(0, targetCollege.score - 10);
           targetCollege.compliance = Math.max(0, targetCollege.compliance - 5);
         }
 
@@ -484,7 +484,7 @@
         await pushCloudScores();
 
         msg.className = "text-xs font-bold mt-2.5 text-rose-400";
-        msg.innerText = "⚠️ Violation Logged: Streak reset to 0. College penalized (-15 Index).";
+        msg.innerText = "⚠️ Violation Logged: Streak reset to 0. -10 PTS deducted.";
       } 
       // VERIFIED SAFE
       else {
